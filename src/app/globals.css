@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lavender-50: #f4f1fa;
+  --lavender-100: #e6e1f2;
+  --lavender-300: #b8a9d9;
+  --lavender-600: #6b5a94;
+  --lavender-800: #473a66;
+  --teal-50: #f0f9f7;
+  --teal-100: #d9ede9;
+  --teal-300: #8fc9be;
+  --teal-600: #3e7a6e;
+  --peach-50: #fef4ee;
+  --peach-100: #fce3d6;
+  --peach-300: #f2ae85;
+  --peach-600: #c2693f;
+  --sage-100: #e8f0e0;
+  --sage-300: #b7cfa0;
+  --sage-600: #5f7a4a;
+  --plum-100: #efeaf7;
+  --plum-500: #8b7ba8;
+  --plum-700: #5b4a7a;
+  --cream-50: #fbf8f3;
+  --cream-100: #f5f0e8;
+  --ink-900: #3a3530;
+  --ink-600: #7a7468;
+  --ink-300: #c7c1b5;
+  --shadow-sm: 0 2px 8px rgba(91, 74, 122, 0.08);
+  --shadow-md: 0 8px 24px rgba(91, 74, 122, 0.12);
+  --shadow-lg: 0 16px 40px rgba(91, 74, 122, 0.16);
+  --focus-ring: 0 0 0 3px rgba(139, 123, 168, 0.4);
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-cream-50 font-body text-body-md text-ink-900 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink-900;
+  }
+
+  *:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+@layer utilities {
+  .text-display-xl {
+    @apply font-display text-[40px] font-bold leading-[1.15];
+  }
+
+  .text-display-lg {
+    @apply font-display text-[32px] font-bold leading-[1.2];
+  }
+
+  .text-display-md {
+    @apply font-display text-[24px] font-semibold leading-[1.25];
+  }
+
+  .text-display-sm {
+    @apply font-display text-[19px] font-semibold leading-[1.3];
+  }
+
+  .text-body-lg {
+    @apply font-body text-[17px] leading-[1.6];
+  }
+
+  .text-body-md {
+    @apply font-body text-[15px] leading-[1.6];
+  }
+
+  .text-body-sm {
+    @apply font-body text-[13px] leading-[1.5];
+  }
+
+  .text-label {
+    @apply font-body text-[13px] font-extrabold uppercase tracking-[0.02em];
+  }
+
+  .prose-vpg h2 {
+    @apply text-display-sm mb-3 mt-6 first:mt-0;
+  }
+
+  .prose-vpg p {
+    @apply text-body-md text-ink-600 mb-3;
+  }
+
+  .prose-vpg strong {
+    @apply font-semibold text-ink-900;
+  }
+
+  .prose-vpg ul {
+    @apply list-disc pl-5 text-body-md text-ink-600 space-y-1 mb-3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
