@@ -30,15 +30,17 @@ cp .env.example .env.local
    - `supabase/migrations/002_claim_anon_read.sql`
 
 4. In Supabase → Authentication → URL Configuration, add:
-   - Site URL: `http://localhost:3000`
-   - Redirect URLs: `http://localhost:3000/auth/callback`
+   - Site URL: `http://localhost:3000` (or your Vercel URL in production)
+   - Redirect URLs: `http://localhost:3000/auth/callback` and your production callback URL
+
+5. **Enable Google sign-in** (see [Google auth setup](#google-auth-setup) below)
 
 ## Supabase project
 
 - **Project:** `Village Playground Gathering` (us-west-2)
 - **Dashboard:** https://supabase.com/dashboard/project/jrbsqpamkhzasnrhhgey
 
-After your first magic-link login, promote yourself to admin:
+After your first Google login, promote yourself to admin:
 
 ```sql
 UPDATE profiles SET is_admin = TRUE WHERE email = 'tessmhart@gmail.com';
@@ -116,7 +118,29 @@ In [Supabase → Authentication → URL Configuration](https://supabase.com/dash
   - `http://localhost:3000/auth/callback`
   - `https://YOUR-VERCEL-URL.vercel.app/auth/callback`
 
-Magic links won't work until these match your live URL.
+Google sign-in won't complete until these match your live site URL.
+
+### Google auth setup
+
+Login uses **Google OAuth** (no magic-link emails — avoids Supabase's 2/hour email cap).
+
+1. **Google Cloud Console** ([console.cloud.google.com](https://console.cloud.google.com))
+   - Create a project (or use an existing one)
+   - APIs & Services → **OAuth consent screen** → configure (External is fine for a gathering app)
+   - Credentials → **Create credentials → OAuth client ID → Web application**
+   - **Authorized redirect URI** (required):
+
+     `https://jrbsqpamkhzasnrhhgey.supabase.co/auth/v1/callback`
+
+   - Copy the **Client ID** and **Client secret**
+
+2. **Supabase** → [Authentication → Providers → Google](https://supabase.com/dashboard/project/jrbsqpamkhzasnrhhgey/auth/providers)
+   - Enable Google
+   - Paste Client ID and Client secret → Save
+
+3. Test: visit `/login` → **Continue with Google**
+
+For local dev, add `http://localhost:3000/auth/callback` to Supabase redirect URLs (already in step 4 above). Google redirect URI stays the Supabase one above — Google always redirects to Supabase first, then Supabase redirects to your app.
 
 ### Custom domain (later)
 
