@@ -29,6 +29,14 @@ export default async function AdminPage() {
         <div className="mt-8">
           <AdminTable profiles={profiles || []} />
         </div>
+        <div className="mt-6">
+          <a
+            href="/admin/content"
+            className="text-body-sm font-semibold text-plum-500 hover:underline"
+          >
+            Edit event content (schedule, map, agreements) →
+          </a>
+        </div>
         <CoCreationSummary />
       </main>
     </div>

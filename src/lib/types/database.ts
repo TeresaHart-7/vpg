@@ -51,6 +51,102 @@ export type AdminContentBlock = {
   updated_at: string;
 };
 
+export type Connection = {
+  id: string;
+  profile_id_a: string;
+  profile_id_b: string;
+  strength: number;
+  set_by_user_id: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NotificationType = "message" | "reply" | "announcement" | "system";
+
+export type AppNotification = {
+  id: string;
+  user_id: string;
+  type: NotificationType;
+  payload: Record<string, unknown>;
+  read_at: string | null;
+  created_at: string;
+};
+
+export type LogisticsCategory = "travel" | "accommodation" | "supplies";
+
+export type LogisticsSubmission = {
+  id: string;
+  profile_id: string;
+  category: LogisticsCategory;
+  title: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type LogisticsReply = {
+  id: string;
+  submission_id: string;
+  profile_id: string;
+  body: string;
+  created_at: string;
+};
+
+export type LogisticsSubmissionWithAuthor = LogisticsSubmission & {
+  profiles: Pick<Profile, "id" | "name" | "photo_url">;
+};
+
+export type LogisticsReplyWithAuthor = LogisticsReply & {
+  profiles: Pick<Profile, "id" | "name" | "photo_url">;
+};
+
+export type ThreadType = "dm" | "announcement" | "topic_chat";
+
+export type Thread = {
+  id: string;
+  type: ThreadType;
+  title: string;
+  participant_ids: string[];
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Message = {
+  id: string;
+  thread_id: string;
+  sender_id: string;
+  body: string;
+  created_at: string;
+};
+
+export type MessageWithSender = Message & {
+  sender_name: string;
+};
+
+export type ScheduleCategory = "meal" | "open_space" | "ceremony" | "free_time";
+
+export type ScheduleItem = {
+  time: string;
+  title: string;
+  category: ScheduleCategory;
+};
+
+export type ScheduleDay = {
+  id: string;
+  label: string;
+  items: ScheduleItem[];
+};
+
+export type EventSchedule = {
+  days: ScheduleDay[];
+};
+
+export type CampMapContent = {
+  imageUrl: string;
+  caption?: string;
+};
+
 export type ProfilePublic = Pick<
   Profile,
   | "id"

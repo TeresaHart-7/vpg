@@ -36,6 +36,20 @@ export async function requireAdmin() {
   return profile;
 }
 
+export async function getUnreadNotificationCount(): Promise<number> {
+  const supabase = await createClient();
+  const user = await getCurrentUser();
+  if (!user) return 0;
+
+  const { count } = await supabase
+    .from("notifications")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .is("read_at", null);
+
+  return count ?? 0;
+}
+
 export async function getContentBlock(key: string): Promise<string | null> {
   const supabase = await createClient();
   const { data } = await supabase

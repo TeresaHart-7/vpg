@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   Sparkle,
@@ -78,9 +79,34 @@ export default async function LandingPage() {
             </div>
           </div>
           <div className="relative mx-auto h-64 w-full max-w-md sm:h-80">
-            <div className="absolute left-0 top-4 h-48 w-36 rotate-[-3deg] rounded-lg border-4 border-cream-50 bg-sage-100 shadow-soft sm:h-56 sm:w-44" />
-            <div className="absolute left-16 top-12 h-48 w-36 rotate-[2deg] rounded-lg border-4 border-cream-50 bg-peach-100 shadow-raised sm:left-20 sm:h-56 sm:w-44" />
-            <div className="absolute left-32 top-0 h-48 w-36 rotate-[4deg] rounded-lg border-4 border-cream-50 bg-teal-100 shadow-soft sm:left-36 sm:h-56 sm:w-44" />
+            <div className="absolute left-0 top-4 h-48 w-36 rotate-[-3deg] overflow-hidden rounded-lg border-4 border-cream-50 shadow-soft sm:h-56 sm:w-44">
+              <Image
+                src="/images/home/hero-huddle.png"
+                alt="Participants in a circle huddle at Camp Ki-Wa-Y"
+                fill
+                className="object-cover"
+                sizes="176px"
+              />
+            </div>
+            <div className="absolute left-16 top-12 h-48 w-36 rotate-[2deg] overflow-hidden rounded-lg border-4 border-cream-50 shadow-raised sm:left-20 sm:h-56 sm:w-44">
+              <Image
+                src="/images/home/hero-mingling.png"
+                alt="Community gathering on the outdoor deck"
+                fill
+                className="object-cover"
+                sizes="176px"
+              />
+            </div>
+            <div className="absolute left-32 top-0 h-48 w-36 rotate-[4deg] overflow-hidden rounded-lg border-4 border-cream-50 shadow-soft sm:left-36 sm:h-56 sm:w-44">
+              <Image
+                src="/images/home/hero-tree.png"
+                alt="Outdoor seating under a large tree in autumn"
+                fill
+                className="object-cover"
+                sizes="176px"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>

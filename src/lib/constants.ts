@@ -58,3 +58,37 @@ export type RegistrationStepId = (typeof REGISTRATION_STEPS)[number]["id"];
 
 export const EVENT_DATES_DISPLAY = "Sept 25–29, 2026";
 export const EVENT_LOCATION = "Camp Ki-Wa-Y, near Waterloo, ON";
+
+export const LOGISTICS_CATEGORIES = [
+  {
+    id: "travel" as const,
+    label: "Travel",
+    description: "Rides, carpooling, and getting to camp",
+    tint: "teal" as const,
+    placeholder: "e.g. I can offer a ride for 2 people from Toronto on Sep 25",
+  },
+  {
+    id: "accommodation" as const,
+    label: "Accommodation",
+    description: "Bedding, cabin preferences, and shared spaces",
+    tint: "lavender" as const,
+    placeholder: "e.g. I have extra bedding to lend",
+  },
+  {
+    id: "supplies" as const,
+    label: "Supplies",
+    description: "Gear, food, and things to share",
+    tint: "sage" as const,
+    placeholder: "e.g. Bringing a large coffee maker for the dining hall",
+  },
+] as const;
+
+export type LogisticsCategoryId = (typeof LOGISTICS_CATEGORIES)[number]["id"];
+
+export const EVENT_SECTIONS = [
+  { href: "/event/schedule", label: "Schedule", description: "Daily program" },
+  { href: "/event/map", label: "Map", description: "Camp layout" },
+  { href: "/event/agreements", label: "Agreements", description: "Camp norms" },
+  { href: "/event/announcements", label: "Announcements", description: "Host updates" },
+  { href: "/event/chat", label: "Chat", description: "Threads & DMs" },
+] as const;

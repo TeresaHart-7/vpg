@@ -1,0 +1,11 @@
+{
+  "name": "Village Playground",
+  "short_name": "VPG",
+  "description": "Village Playground gathering — registration and on-site reference",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#F7F3EC",
+  "theme_color": "#F7F3EC",
+  "orientation": "portrait-primary",
+  "icons": []
+}

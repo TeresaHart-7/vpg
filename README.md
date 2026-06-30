@@ -28,6 +28,12 @@ cp .env.example .env.local
 3. Run the database migrations in the Supabase SQL Editor:
    - `supabase/migrations/001_initial_schema.sql`
    - `supabase/migrations/002_claim_anon_read.sql`
+   - `supabase/migrations/003_avatars_storage.sql`
+   - `supabase/migrations/004_seed_content_from_guides.sql`
+   - `supabase/migrations/005_google_oauth_profile_name.sql`
+   - `supabase/migrations/006_phase3_logistics.sql`
+   - `supabase/migrations/007_phase4_chat_policies.sql`
+   - `supabase/migrations/008_seed_event_content.sql`
 
 4. In Supabase → Authentication → URL Configuration, add:
    - Site URL: `http://localhost:3000` (or your Vercel URL in production)
@@ -87,8 +93,8 @@ Visit [http://localhost:3000/dev/styleguide](http://localhost:3000/dev/styleguid
 | **Phase 0** — Scaffold, UI library, auth, style guide | Done |
 | **Phase 1** — Landing, registration (4 steps), payment page, admin table | Done |
 | **Phase 2** — Linked guests, co-creation, admin edit + column toggle | Done |
-| **Phase 3** — Directory, network map, notifications, logistics hub | Not started |
-| **Phase 4** — Announcements, chat, schedule, map, agreements | Not started |
+| **Phase 3** — Directory, network map, notifications, logistics hub | Done |
+| **Phase 4** — Announcements, chat, schedule, map, agreements | Done |
 
 ## Deploy to Vercel
 

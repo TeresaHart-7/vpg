@@ -71,6 +71,36 @@ export default async function DashboardPage() {
             </Link>
           </Card>
 
+          <Card tint="lavender">
+            <h2 className="text-display-sm">At camp</h2>
+            <p className="mt-1 text-body-sm text-ink-600">
+              Schedule, map, agreements, announcements, and chat.
+            </p>
+            <Link href="/event" className="mt-4 inline-block">
+              <Button variant="secondary">Open event hub</Button>
+            </Link>
+          </Card>
+
+          <Card tint="lavender">
+            <h2 className="text-display-sm">Directory &amp; network</h2>
+            <p className="mt-1 text-body-sm text-ink-600">
+              Browse who&apos;s coming and map your connections in the village.
+            </p>
+            <Link href="/directory" className="mt-4 inline-block">
+              <Button variant="secondary">Open directory</Button>
+            </Link>
+          </Card>
+
+          <Card tint="sage">
+            <h2 className="text-display-sm">Logistics hub</h2>
+            <p className="mt-1 text-body-sm text-ink-600">
+              Coordinate rides, bedding, and supplies with other participants.
+            </p>
+            <Link href="/logistics" className="mt-4 inline-block">
+              <Button variant="secondary">Open logistics hub</Button>
+            </Link>
+          </Card>
+
           {guestCount !== null && guestCount > 0 && (
             <Card tint="sage">
               <h2 className="text-display-sm">People you&apos;re bringing</h2>
