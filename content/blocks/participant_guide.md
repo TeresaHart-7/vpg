@@ -1,9 +1,6 @@
-## Dates & times (2026)
+## Date & time
 
-- Gathering **Sept 25 – Sept 29, 2026**
-- Gathering begins **Sept 25 evening**
-- Full days **Sept 26–28**
-- Main gathering concludes **Sept 29 @ 1pm**
+**Sept 25th 2p – Sept 29th 2p, 2026**
 
 ## Location
 
@@ -15,20 +12,24 @@ Please reach out to the host crew before calling the camp directly.
 
 ## Getting there
 
-| From | To | Option | Notes |
-|------|-----|--------|-------|
-| Toronto Union | Kitchener | GO Train | ~2 hrs |
-| Pearson | UW | GO Bus | ~2 hrs, 1 transfer |
-| Kitchener terminal | Camp | Uber/Lyft | ~35 min — split with others! |
-| Toronto / Pearson | Camp | Uber/Lyft | 1–1.5 hrs — split with others! |
+
+| From               | To        | Option    | Notes                          |
+| ------------------ | --------- | --------- | ------------------------------ |
+| Toronto Union      | Kitchener | GO Train  | ~2 hrs                         |
+| Pearson            | UW        | GO Bus    | ~2 hrs, 1 transfer             |
+| Kitchener terminal | Camp      | Uber/Lyft | ~35 min — split with others!   |
+| Toronto / Pearson  | Camp      | Uber/Lyft | 1–1.5 hrs — split with others! |
+
 
 Carpool coordination will happen in the Coordination section below once you're registered.
 
 ## Accommodations
 
 - Bunk beds in cabins (rooms of 6–12 people) — bring your own sheets and pillow
-- Some tenting available — let us know in registration if you can tent
-- Tell us who you'd like to bunk with when you register
+  - Tell us who you'd like to bunk with when you register
+- Tenting available — let us know in registration if you can tent
+
+
 
 ## Food
 
