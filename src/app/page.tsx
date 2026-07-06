@@ -1,34 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Sparkle,
-  Heart,
-  UsersThree,
-  HandHeart,
-  Compass,
-} from "@phosphor-icons/react/dist/ssr";
+import { Compass } from "@phosphor-icons/react/dist/ssr";
+import { AppNav } from "@/components/layout/AppNav";
 import { SiteHeader, SiteFooter } from "@/components/layout/SiteHeader";
 import { MemoriesFrom2025 } from "@/components/landing/MemoriesFrom2025";
 import { BlobOne, BlobTwo, BlobThree } from "@/components/decorative/Blobs";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { getContentBlock } from "@/lib/auth/helpers";
 import { getPageContent } from "@/lib/content";
-import { markdownToHtml } from "@/lib/utils";
+import { markdownToHtml, cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
-
-const ICONS = { Heart, Sparkle, UsersThree, HandHeart } as const;
 
 export default async function LandingPage() {
   const page = getPageContent("landing");
   const hero = page.hero as Record<string, string>;
   const about = page.about as Record<string, string>;
-  const principles = page.principles as {
-    title: string;
-    body: string;
-    tint: string;
-    icon: string;
-  }[];
   const cta = page.cta as Record<string, string>;
   const orientingContent = await getContentBlock("orienting_artifact");
   const supabase = await createClient();
@@ -39,8 +25,8 @@ export default async function LandingPage() {
   const registerHref = user ? "/register" : "/login?redirect=/register";
 
   return (
-    <div className="min-h-screen bg-cream-50">
-      <SiteHeader />
+    <div className={cn("min-h-screen bg-cream-50", user && "pb-24 md:pb-8")}>
+      {user ? <AppNav /> : <SiteHeader />}
 
       <section className="relative overflow-hidden bg-lavender-50 px-4 py-16 sm:px-6 sm:py-24">
         <BlobOne className="-left-20 -top-20 h-80 w-80" />
@@ -108,19 +94,6 @@ export default async function LandingPage() {
           ) : (
             <p className="max-w-3xl text-body-lg text-ink-600">{about.fallback}</p>
           )}
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {principles.map(({ title, body, tint, icon }) => {
-              const Icon = ICONS[icon as keyof typeof ICONS] || Heart;
-              return (
-                <Card key={title} tint={tint as "sage" | "peach" | "teal" | "lavender"}>
-                  <Icon className="text-plum-500" size={28} weight="duotone" />
-                  <h3 className="mt-3 text-display-sm">{title}</h3>
-                  <p className="mt-2 text-body-sm text-ink-600">{body}</p>
-                </Card>
-              );
-            })}
-          </div>
         </div>
       </section>
 
