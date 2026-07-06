@@ -257,6 +257,12 @@ export function RegistrationForm({
     if (stepIndex > 0) setStep(STEP_ORDER[stepIndex - 1]);
   };
 
+  const goToStep = async (targetStep: RegistrationStepId) => {
+    if (targetStep === step) return;
+    await saveProfile();
+    setStep(targetStep);
+  };
+
   const handleComplete = async () => {
     const valid = await trigger(["name", "email"]);
     if (!valid) {
@@ -323,7 +329,9 @@ export function RegistrationForm({
 
   return (
     <div>
-      {!isAdminEdit && <RegistrationProgressBar currentStep={step} />}
+      {!isAdminEdit && (
+        <RegistrationProgressBar currentStep={step} onStepClick={goToStep} />
+      )}
 
       <Card
         tint={tint === "lavender" ? "lavender" : tint === "sage" ? "sage" : tint === "peach" ? "peach" : "teal"}
