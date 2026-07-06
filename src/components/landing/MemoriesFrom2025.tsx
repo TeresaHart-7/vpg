@@ -1,4 +1,4 @@
-const VIDEO_SRC = "/videos/memories-2025.mp4.mov";
+const YOUTUBE_EMBED = "https://www.youtube.com/embed/A3rYMtPL5hg";
 
 export function MemoriesFrom2025() {
   return (
@@ -10,15 +10,16 @@ export function MemoriesFrom2025() {
         </p>
 
         <div className="mt-6 overflow-hidden rounded-lg border border-lavender-100 bg-ink-900 shadow-soft">
-          <video
-            src={VIDEO_SRC}
-            controls
-            playsInline
-            preload="metadata"
-            className="aspect-video w-full"
-          >
-            Your browser does not support embedded video.
-          </video>
+          <div className="relative aspect-video w-full">
+            <iframe
+              src={YOUTUBE_EMBED}
+              title="Memories from 2025"
+              className="absolute inset-0 h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
         </div>
       </div>
     </section>
