@@ -1,6 +1,6 @@
 ## Registration costs
 
-- **$400 CAD** — full event
+- **$450 CAD** — full event
 - **$350 CAD** — children ages 5–18
 - Children under 5 are free
 - USD equivalents: **$285 USD** for adults · **$250 USD** for kids

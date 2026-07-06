@@ -1,9 +1,8 @@
 {
   "title": "At camp",
-  "subtitle": "Schedule, map, and agreements — lightweight for spotty cell service.",
+  "subtitle": "Schedule and map — lightweight for spotty cell service.",
   "sections": [
     { "label": "Schedule", "description": "Daily program", "href": "/event/schedule" },
-    { "label": "Map", "description": "Camp layout", "href": "/event/map" },
-    { "label": "Agreements", "description": "Camp norms", "href": "/event/agreements" }
+    { "label": "Map", "description": "Camp layout", "href": "/event/map" }
   ]
 }
