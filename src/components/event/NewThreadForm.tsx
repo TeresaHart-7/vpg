@@ -48,7 +48,7 @@ export function NewThreadForm({
       if (type === "topic") {
         if (!title.trim()) return;
         const threadId = await createTopicThread(supabase, userId, title);
-        router.push(`/event/chat/${threadId}`);
+        router.push(`/messages/chat/${threadId}`);
       } else {
         const other = others.find((p) => p.user_id === otherUserId);
         if (!other) return;
@@ -58,7 +58,7 @@ export function NewThreadForm({
           other.user_id,
           other.name
         );
-        router.push(`/event/chat/${threadId}`);
+        router.push(`/messages/chat/${threadId}`);
       }
     } catch {
       setError("Could not start conversation. Please try again.");

@@ -40,15 +40,10 @@ The facility is **nut-free** in public spaces. Let us know dietary restrictions 
 
 We're here for quality time in nature — internet and electronics are discouraged. Wi-Fi is available in the dining hall (Paradise Post). Mediocre cell service throughout the land.
 
-## What to bring
-
-- Sleeping bag or blanket + fitted sheet, pillow
-- Towel, toiletries, refillable water bottle
-- Indoor shoes, outdoor/hiking shoes or rain boots
-- Warm layers (evenings can be 10–15°C), bathing suit, sun hat
-- Ear plugs / eye mask if you're a light sleeper
-- Optional: camp chair, games/cards, crafts to share
-
 ## Camp activities (staff-led)
 
-Low ropes, rock climbing, archery, high ropes, waterfront with canoes/kayaks/swimming — offered at designated times each afternoon. Open Space sessions let anyone host an activity or conversation.
+See the activity list below — staff-led options run at designated times each afternoon.
+
+## What to bring
+
+See the **printable packing checklist** for a full list. Essentials include sleeping gear, toiletries, layers for cool evenings (10–15°C), and shoes for indoors and outdoors.

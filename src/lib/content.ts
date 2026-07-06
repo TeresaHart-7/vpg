@@ -53,11 +53,22 @@ export function getRegistrationCopy(): RegistrationCopy {
   return JSON.parse(readText("registration.json")) as RegistrationCopy;
 }
 
-export function getPackingChecklist(): string[] {
+export type PackingChecklistSection = {
+  title: string;
+  items: string[];
+};
+
+export function getPackingChecklist(): PackingChecklistSection[] {
   if (!fileExists("packing-checklist.json")) {
     return [];
   }
-  return JSON.parse(readText("packing-checklist.json")) as string[];
+  const data = JSON.parse(readText("packing-checklist.json")) as
+    | { sections: PackingChecklistSection[] }
+    | string[];
+  if (Array.isArray(data)) {
+    return [{ title: "", items: data }];
+  }
+  return data.sections ?? [];
 }
 
 export type ContentFileInfo = {

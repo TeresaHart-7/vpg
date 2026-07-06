@@ -1,16 +1,48 @@
-[
-  "Sleeping bag or blanket + fitted sheet",
-  "Pillow",
-  "Towel",
-  "Toiletries",
-  "Refillable water bottle",
-  "Indoor shoes",
-  "Outdoor/hiking shoes or rain boots",
-  "Warm layers (evenings can be 10–15°C)",
-  "Bathing suit",
-  "Sun hat",
-  "Ear plugs / eye mask (if you're a light sleeper)",
-  "Camp chair (optional)",
-  "Games/cards (optional)",
-  "Crafts to share (optional)"
-]
+{
+  "sections": [
+    {
+      "title": "✅ Personal Items",
+      "items": [
+        "Toiletries (toothbrush, toothpaste, soap, shampoo, brush/comb)",
+        "Refillable water bottle",
+        "Towel (1–2)",
+        "Laundry bag",
+        "Sleeping bag or blanket and fitted sheet",
+        "Pillow and pillowcase",
+        "Ear plugs (if you are sensitive to noise at night), Eye mask & other sleeping gear",
+        "Flashlight with spare batteries",
+        "Indoor shoes",
+        "Seating for indoor or outdoor (camp chairs, meditation cushions, yoga mat)",
+        "Day pack (small backpack)",
+        "Camera (optional)",
+        "Games/cards (optional)"
+      ]
+    },
+    {
+      "title": "👕 Clothing",
+      "items": [
+        "T-shirts",
+        "Long-sleeve shirts",
+        "Sweaters",
+        "Shorts",
+        "Pants",
+        "Underwear",
+        "Socks",
+        "Warm pajamas",
+        "An outfit that makes you feel awesome (∞)"
+      ]
+    },
+    {
+      "title": "🍂 Outerwear & Gear – Spring & Fall",
+      "items": [
+        "Outdoor/hiking shoes or rain boots",
+        "Sun hat",
+        "Bathing suit",
+        "Warm jacket",
+        "Hat & Mitts (for colder weather, cool evenings: 10–15℃)",
+        "Sunscreen",
+        "Sunglasses"
+      ]
+    }
+  ]
+}

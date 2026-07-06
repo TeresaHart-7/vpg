@@ -14,14 +14,6 @@
       "tint": "lavender"
     },
     {
-      "id": "payment",
-      "title": "Payment",
-      "description": "$400 CAD full event · $350 for ages 5–18 · e-transfer preferred",
-      "button": "View payment instructions",
-      "href": "/payment",
-      "tint": "peach"
-    },
-    {
       "id": "logistics",
       "title": "Logistics",
       "description": "Participant info, packing checklist, and village coordination.",

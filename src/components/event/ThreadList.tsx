@@ -32,12 +32,12 @@ export function ThreadList({ threads, announcementHref }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap gap-3">
-        <Link href="/event/chat/new?type=topic">
+        <Link href="/messages/chat/new?type=topic">
           <Button variant="secondary" size="sm">
             New topic
           </Button>
         </Link>
-        <Link href="/event/chat/new?type=dm">
+        <Link href="/messages/chat/new?type=dm">
           <Button variant="secondary" size="sm">
             Message someone
           </Button>
@@ -60,7 +60,7 @@ export function ThreadList({ threads, announcementHref }: Props) {
             const Icon = meta.icon;
             return (
               <li key={thread.id}>
-                <Link href={`/event/chat/${thread.id}`}>
+                <Link href={`/messages/chat/${thread.id}`}>
                   <Card tint={meta.tint} className="transition-transform hover:-translate-y-0.5">
                     <div className="flex items-start gap-3">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/80 text-plum-600">

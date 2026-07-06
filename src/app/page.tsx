@@ -8,6 +8,7 @@ import {
   Compass,
 } from "@phosphor-icons/react/dist/ssr";
 import { SiteHeader, SiteFooter } from "@/components/layout/SiteHeader";
+import { MemoriesFrom2025 } from "@/components/landing/MemoriesFrom2025";
 import { BlobOne, BlobTwo, BlobThree } from "@/components/decorative/Blobs";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -132,6 +133,8 @@ export default async function LandingPage() {
           </Link>
         </div>
       </section>
+
+      {user && <MemoriesFrom2025 />}
 
       <SiteFooter />
     </div>

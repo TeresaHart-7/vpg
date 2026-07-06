@@ -4,7 +4,7 @@ const OFFLINE_URLS = [
   "/event/schedule",
   "/event/map",
   "/event/agreements",
-  "/event/announcements",
+  "/messages/announcements",
   "/camp-map.svg",
   "/manifest.json",
 ];

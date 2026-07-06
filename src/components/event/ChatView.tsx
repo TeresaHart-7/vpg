@@ -3,11 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { formatMessageTime } from "@/lib/chat";
 import { markThreadRead } from "@/lib/thread-reads";
+import { EditableMessage } from "@/components/messages/EditableMessage";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
-import { cn } from "@/lib/utils";
 import type { MessageWithSender } from "@/lib/types/database";
 
 type Props = {
@@ -43,6 +42,16 @@ export function ChatView({
     void markThreadRead(supabase, userId, threadId);
   }, [threadId, userId]);
 
+  const enrichSender = useCallback(async (senderId: string) => {
+    const supabase = createClient();
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("name")
+      .eq("user_id", senderId)
+      .single();
+    return profile?.name ?? "Someone";
+  }, []);
+
   useEffect(() => {
     const supabase = createClient();
     const channel = supabase
@@ -56,30 +65,27 @@ export function ChatView({
           filter: `thread_id=eq.${threadId}`,
         },
         async (payload) => {
-          const row = payload.new as {
-            id: string;
-            thread_id: string;
-            sender_id: string;
-            body: string;
-            created_at: string;
-          };
-
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("name")
-            .eq("user_id", row.sender_id)
-            .single();
-
+          const row = payload.new as MessageWithSender;
+          const sender_name = await enrichSender(row.sender_id);
           setMessages((prev) => {
             if (prev.some((m) => m.id === row.id)) return prev;
-            return [
-              ...prev,
-              {
-                ...row,
-                sender_name: profile?.name ?? "Someone",
-              },
-            ];
+            return [...prev, { ...row, sender_name }];
           });
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "messages",
+          filter: `thread_id=eq.${threadId}`,
+        },
+        (payload) => {
+          const row = payload.new as MessageWithSender;
+          setMessages((prev) =>
+            prev.map((m) => (m.id === row.id ? { ...m, ...row } : m))
+          );
         }
       )
       .subscribe();
@@ -87,7 +93,7 @@ export function ChatView({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [threadId]);
+  }, [threadId, enrichSender]);
 
   const sendMessage = useCallback(
     async (e: React.FormEvent) => {
@@ -120,34 +126,20 @@ export function ChatView({
         {messages.length === 0 ? (
           <p className="text-body-md text-ink-600">No messages yet. Say hello!</p>
         ) : (
-          messages.map((msg) => {
-            const isOwn = msg.sender_id === userId;
-            return (
-              <div
-                key={msg.id}
-                className={cn("flex", isOwn ? "justify-end" : "justify-start")}
-              >
-                <div
-                  className={cn(
-                    "max-w-[85%] rounded-md px-4 py-3",
-                    isOwn
-                      ? "rounded-br-sm bg-plum-100 text-ink-900"
-                      : "rounded-bl-sm bg-cream-100 text-ink-900"
-                  )}
-                >
-                  {!isOwn && (
-                    <p className="mb-1 text-body-sm font-semibold text-plum-700">
-                      {msg.sender_name}
-                    </p>
-                  )}
-                  <p className="whitespace-pre-wrap text-body-md">{msg.body}</p>
-                  <p className="mt-1 text-[11px] text-ink-600">
-                    {formatMessageTime(msg.created_at)}
-                  </p>
-                </div>
-              </div>
-            );
-          })
+          messages.map((msg) => (
+            <EditableMessage
+              key={msg.id}
+              message={msg}
+              userId={userId}
+              isOwn={msg.sender_id === userId}
+              align={msg.sender_id === userId ? "end" : "start"}
+              onUpdated={(updated) =>
+                setMessages((prev) =>
+                  prev.map((m) => (m.id === updated.id ? updated : m))
+                )
+              }
+            />
+          ))
         )}
         <div ref={bottomRef} />
       </div>

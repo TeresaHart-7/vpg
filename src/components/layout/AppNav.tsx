@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   House,
   UserCircle,
-  CreditCard,
   ShieldCheck,
   SignOut,
   Tent,
@@ -11,7 +10,6 @@ import {
   EnvelopeSimple,
 } from "@phosphor-icons/react/dist/ssr";
 import { getCurrentProfile, getCurrentUser, getUnreadAnnouncementCount, getUnreadMessageCount } from "@/lib/auth/helpers";
-import { NotificationBell } from "@/components/layout/NotificationBell";
 import { MessagesEnvelope } from "@/components/layout/MessagesEnvelope";
 
 export async function AppNav() {
@@ -23,7 +21,7 @@ export async function AppNav() {
   return (
     <header className="sticky top-0 z-40 border-b border-lavender-100 bg-cream-50/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/dashboard" className="font-display text-display-sm text-lavender-800">
+        <Link href="/" className="font-display text-display-sm text-lavender-800">
           Village Playground
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
@@ -42,9 +40,6 @@ export async function AppNav() {
           <NavLink href="/register" icon={<UserCircle size={18} />}>
             Registration
           </NavLink>
-          <NavLink href="/payment" icon={<CreditCard size={18} />}>
-            Payment
-          </NavLink>
           {profile?.is_admin && (
             <NavLink href="/admin" icon={<ShieldCheck size={18} />}>
               Admin
@@ -53,9 +48,12 @@ export async function AppNav() {
         </nav>
         <div className="flex items-center gap-2">
           {user && (
-            <MessagesEnvelope userId={user.id} initialUnreadCount={unreadMessages} />
+            <MessagesEnvelope
+              userId={user.id}
+              initialUnreadCount={unreadMessages}
+              initialAnnouncementUnread={unreadAnnouncements}
+            />
           )}
-          {profile && <NotificationBell initialCount={unreadAnnouncements} />}
           <span className="hidden text-body-sm text-ink-600 sm:inline">
             {profile?.name || "Guest"}
           </span>
