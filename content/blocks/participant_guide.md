@@ -1,6 +1,6 @@
 ## Date & time
 
-**Sept 25th 2p – Sept 29th 2p, 2026**
+**Sept 25th at 2pm – Sept 29th at 2pm, 2026**
 
 ## Location
 
