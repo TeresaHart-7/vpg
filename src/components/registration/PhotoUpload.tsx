@@ -5,6 +5,7 @@ import Image from "next/image";
 import { UserCircle, Camera } from "@phosphor-icons/react";
 import { uploadAvatar } from "@/lib/upload";
 import { cn } from "@/lib/utils";
+import { ImageCropModal } from "@/components/registration/ImageCropModal";
 
 type PhotoUploadProps = {
   userId: string;
@@ -24,8 +25,9 @@ export function PhotoUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
 
-  const handleFile = async (file: File) => {
+  const handleFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
       setError("Please choose an image file (JPEG, PNG, or WebP).");
       return;
@@ -34,10 +36,16 @@ export function PhotoUpload({
       setError("Image must be under 10 MB before compression.");
       return;
     }
-
-    setUploading(true);
     setError(null);
+    setCropSrc(URL.createObjectURL(file));
+  };
+
+  const handleCropConfirm = async (blob: Blob) => {
+    if (cropSrc) URL.revokeObjectURL(cropSrc);
+    setCropSrc(null);
+    setUploading(true);
     try {
+      const file = new File([blob], "avatar.webp", { type: "image/webp" });
       const url = await uploadAvatar(file, userId);
       onChange(url);
       onBlur?.();
@@ -89,7 +97,7 @@ export function PhotoUpload({
             <>
               <p>Tap to upload a photo.</p>
               <p className="mt-1 text-ink-300">
-                JPEG, PNG, or WebP — compressed automatically.
+                You can crop and zoom before saving.
               </p>
             </>
           )}
@@ -102,11 +110,23 @@ export function PhotoUpload({
         className="sr-only"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) void handleFile(file);
+          if (file) handleFile(file);
           e.target.value = "";
         }}
       />
       {error && <p className="text-body-sm text-error">{error}</p>}
+
+      {cropSrc && (
+        <ImageCropModal
+          open
+          imageSrc={cropSrc}
+          onClose={() => {
+            URL.revokeObjectURL(cropSrc);
+            setCropSrc(null);
+          }}
+          onConfirm={handleCropConfirm}
+        />
+      )}
     </div>
   );
 }

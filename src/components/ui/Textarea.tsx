@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 
 type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label?: string;
+  hint?: string;
   error?: string;
   maxLength?: number;
   value?: string;
@@ -9,6 +10,7 @@ type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
 
 export function Textarea({
   label,
+  hint,
   error,
   maxLength = 500,
   value = "",
@@ -28,6 +30,7 @@ export function Textarea({
           {label}
         </label>
       )}
+      {hint && <p className="text-body-sm text-ink-600">{hint}</p>}
       <div className="relative">
         <textarea
           id={inputId}

@@ -12,37 +12,23 @@ import { BlobOne, BlobTwo, BlobThree } from "@/components/decorative/Blobs";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { getContentBlock } from "@/lib/auth/helpers";
+import { getPageContent } from "@/lib/content";
 import { markdownToHtml } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
 
-const principles = [
-  {
-    title: "Relationship first",
-    body: "We show up for each other, not just the program.",
-    icon: Heart,
-    tint: "sage" as const,
-  },
-  {
-    title: "Co-creation",
-    body: "The gathering emerges from everyone's gifts and questions.",
-    icon: Sparkle,
-    tint: "peach" as const,
-  },
-  {
-    title: "Care for the whole",
-    body: "Children, elders, and newcomers are part of the village.",
-    icon: UsersThree,
-    tint: "teal" as const,
-  },
-  {
-    title: "Honest presence",
-    body: "We practice showing up as we are.",
-    icon: HandHeart,
-    tint: "lavender" as const,
-  },
-];
+const ICONS = { Heart, Sparkle, UsersThree, HandHeart } as const;
 
 export default async function LandingPage() {
+  const page = getPageContent("landing");
+  const hero = page.hero as Record<string, string>;
+  const about = page.about as Record<string, string>;
+  const principles = page.principles as {
+    title: string;
+    body: string;
+    tint: string;
+    icon: string;
+  }[];
+  const cta = page.cta as Record<string, string>;
   const orientingContent = await getContentBlock("orienting_artifact");
   const supabase = await createClient();
   const {
@@ -60,21 +46,15 @@ export default async function LandingPage() {
         <BlobTwo className="-bottom-16 -right-16 h-72 w-72" color="teal" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
           <div>
-            <p className="text-label text-teal-600">Sept 25–29, 2026 · Camp Ki-Wa-Y</p>
-            <h1 className="mt-4 text-display-xl text-lavender-800">
-              Welcome to the Village Playground
-            </h1>
-            <p className="mt-4 text-body-lg text-ink-600">
-              This is for the Village Playground gathering — a 4–5 day exploration
-              of villaging: cultivating interdependent, high-trust relationships
-              of mutual support and thrival.
-            </p>
+            <p className="text-label text-teal-600">{hero.eyebrow}</p>
+            <h1 className="mt-4 text-display-xl text-lavender-800">{hero.title}</h1>
+            <p className="mt-4 text-body-lg text-ink-600">{hero.subtitle}</p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link href={registerHref}>
-                <Button>Register now →</Button>
+                <Button>{hero.primaryCta}</Button>
               </Link>
               <Link href="#about">
-                <Button variant="secondary">About villaging</Button>
+                <Button variant="secondary">{hero.secondaryCta}</Button>
               </Link>
             </div>
           </div>
@@ -116,46 +96,39 @@ export default async function LandingPage() {
         <div className="relative mx-auto max-w-6xl">
           <div className="mb-10 flex items-center gap-3">
             <Compass className="text-plum-500" size={28} weight="duotone" />
-            <h2 className="text-display-lg">About villaging</h2>
+            <h2 className="text-display-lg">{about.title}</h2>
           </div>
 
           {orientingContent ? (
             <div
               className="prose-vpg max-w-3xl"
-              dangerouslySetInnerHTML={{
-                __html: markdownToHtml(orientingContent),
-              }}
+              dangerouslySetInnerHTML={{ __html: markdownToHtml(orientingContent) }}
             />
           ) : (
-            <p className="max-w-3xl text-body-lg text-ink-600">
-              The Village Playground is a gathering for people exploring
-              villaging — cultivating interdependent, high-trust relationships
-              of mutual support and thrival. ~70+ attendees including families
-              and children, hosted by the Village Network Playground crew.
-            </p>
+            <p className="max-w-3xl text-body-lg text-ink-600">{about.fallback}</p>
           )}
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {principles.map(({ title, body, icon: Icon, tint }) => (
-              <Card key={title} tint={tint}>
-                <Icon className="text-plum-500" size={28} weight="duotone" />
-                <h3 className="mt-3 text-display-sm">{title}</h3>
-                <p className="mt-2 text-body-sm text-ink-600">{body}</p>
-              </Card>
-            ))}
+            {principles.map(({ title, body, tint, icon }) => {
+              const Icon = ICONS[icon as keyof typeof ICONS] || Heart;
+              return (
+                <Card key={title} tint={tint as "sage" | "peach" | "teal" | "lavender"}>
+                  <Icon className="text-plum-500" size={28} weight="duotone" />
+                  <h3 className="mt-3 text-display-sm">{title}</h3>
+                  <p className="mt-2 text-body-sm text-ink-600">{body}</p>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
 
       <section className="bg-teal-50 px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-display-md">Ready to join us?</h2>
-          <p className="mt-3 text-body-md text-ink-600">
-            Registration takes about 15 minutes. Only your name and email are
-            required — everything else is optional and editable anytime.
-          </p>
+          <h2 className="text-display-md">{cta.title}</h2>
+          <p className="mt-3 text-body-md text-ink-600">{cta.subtitle}</p>
           <Link href={registerHref} className="mt-6 inline-block">
-            <Button>Register now →</Button>
+            <Button>{cta.button}</Button>
           </Link>
         </div>
       </section>

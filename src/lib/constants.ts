@@ -17,19 +17,50 @@ export const COMING_OPTIONS = [
 export const CO_CREATION_DOMAINS = [
   {
     value: "unifying_ground",
-    label: "How do we create a unifying ground?",
-    icon: "GlobeHemisphereWest",
-  },
-  {
-    value: "bridging_pedagogy",
-    label: 'What might a pedagogy around "bridging" look like?',
+    label: "Design of structures and processes to enable bridging of perspectives",
     icon: "Bridge",
   },
   {
     value: "schedule_design",
-    label: "What might our schedule look like? What pre-planned events do we want?",
+    label: "More concretely, what might our schedule and events look like?",
     icon: "CalendarBlank",
   },
+] as const;
+
+export const CONNECTION_LEVELS = [
+  {
+    value: 1,
+    label: "We've met — our paths have crossed at least once.",
+  },
+  {
+    value: 2,
+    label: "We've connected a handful of times — a familiar face with some shared history.",
+  },
+  {
+    value: 3,
+    label: "We're close — there is warmth here and we've walked alongside each other over time.",
+  },
+  {
+    value: 4,
+    label: "We're very close — the inner circle, someone core to my life.",
+  },
+] as const;
+
+export const PACKING_CHECKLIST = [
+  "Sleeping bag or blanket + fitted sheet",
+  "Pillow",
+  "Towel",
+  "Toiletries",
+  "Refillable water bottle",
+  "Indoor shoes",
+  "Outdoor/hiking shoes or rain boots",
+  "Warm layers (evenings can be 10–15°C)",
+  "Bathing suit",
+  "Sun hat",
+  "Ear plugs / eye mask (if you're a light sleeper)",
+  "Camp chair (optional)",
+  "Games/cards (optional)",
+  "Crafts to share (optional)",
 ] as const;
 
 export const OPERATIONAL_SHIFTS = [
@@ -89,6 +120,4 @@ export const EVENT_SECTIONS = [
   { href: "/event/schedule", label: "Schedule", description: "Daily program" },
   { href: "/event/map", label: "Map", description: "Camp layout" },
   { href: "/event/agreements", label: "Agreements", description: "Camp norms" },
-  { href: "/event/announcements", label: "Announcements", description: "Host updates" },
-  { href: "/event/chat", label: "Chat", description: "Threads & DMs" },
 ] as const;

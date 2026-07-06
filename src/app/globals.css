@@ -103,6 +103,23 @@
   .prose-vpg ul {
     @apply list-disc pl-5 text-body-md text-ink-600 space-y-1 mb-3;
   }
+
+  .prose-vpg ol {
+    @apply list-decimal pl-5 text-body-md text-ink-600 space-y-1 mb-3;
+  }
+
+  .prose-vpg a {
+    @apply text-plum-500 underline hover:text-plum-700;
+  }
+
+  .prose-vpg table {
+    @apply mb-3 w-full text-body-sm;
+  }
+
+  .prose-vpg td,
+  .prose-vpg th {
+    @apply border border-lavender-100 px-2 py-1 text-left;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

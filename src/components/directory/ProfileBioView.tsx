@@ -4,11 +4,14 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { setConnectionStrength } from "@/lib/connections";
+import type { PageContent } from "@/lib/content";
 import type { ProfilePublic } from "@/lib/types/database";
 import { formatDates } from "@/lib/types/database";
 import { Card } from "@/components/ui/Card";
 import { ComingBadge } from "@/components/ui/StatusBadge";
 import { ConnectionStrength } from "@/components/ui/ConnectionStrength";
+import { ConnectionModal } from "@/components/directory/ConnectionModal";
+import { ConnectionCelebration } from "@/components/directory/ConnectionCelebration";
 import { Avatar } from "@/components/directory/ParticipantCard";
 
 type Props = {
@@ -17,6 +20,7 @@ type Props = {
   userId: string;
   initialStrength: number;
   isOwnProfile: boolean;
+  pageCopy: PageContent;
 };
 
 export function ProfileBioView({
@@ -25,11 +29,17 @@ export function ProfileBioView({
   userId,
   initialStrength,
   isOwnProfile,
+  pageCopy,
 }: Props) {
   const router = useRouter();
   const [strength, setStrength] = useState(initialStrength);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
 
-  const handleConnectionChange = useCallback(
+  const celebration = pageCopy.connectionCelebration as { title: string; body: string };
+  const connectionLevels = pageCopy.connectionLevels as { value: number; label: string }[];
+
+  const handleConnectionSave = useCallback(
     async (value: number) => {
       const prev = strength;
       setStrength(value);
@@ -45,6 +55,7 @@ export function ProfileBioView({
         router.refresh();
       } catch {
         setStrength(prev);
+        throw new Error("Failed to save");
       }
     },
     [myProfileId, profile.id, router, strength, userId]
@@ -73,11 +84,29 @@ export function ProfileBioView({
 
         {!isOwnProfile && (
           <div className="mt-6 border-t border-lavender-100 pt-4">
-            <p className="mb-2 text-label text-ink-600">Your connection to {profile.name.split(" ")[0]}</p>
-            <ConnectionStrength value={strength} onChange={handleConnectionChange} />
+            <button
+              type="button"
+              onClick={() => setModalOpen(true)}
+              className="flex w-full items-center justify-between gap-2 text-left"
+            >
+              <span className="text-label text-ink-600">
+                Your connection to {profile.name.split(" ")[0]}
+              </span>
+              <ConnectionStrength value={strength} readOnly showNumber={strength > 0} />
+            </button>
             <p className="mt-2 text-body-sm text-ink-600">
-              Only you see this rating — it helps build the village network map.
+              {pageCopy.profileConnectionNote as string}
             </p>
+            <ConnectionModal
+              open={modalOpen}
+              onClose={() => setModalOpen(false)}
+              personName={profile.name}
+              initialStrength={strength}
+              onSave={handleConnectionSave}
+              onCelebration={() => setCelebrate(true)}
+              intro={pageCopy.connectionModalIntro as string}
+              levels={connectionLevels}
+            />
           </div>
         )}
       </Card>
@@ -106,6 +135,13 @@ export function ProfileBioView({
           </p>
         </Card>
       )}
+
+      <ConnectionCelebration
+        show={celebrate}
+        onDone={() => setCelebrate(false)}
+        title={celebration?.title}
+        body={celebration?.body}
+      />
     </div>
   );
 }

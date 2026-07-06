@@ -4,6 +4,7 @@ import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import { AppNav } from "@/components/layout/AppNav";
 import { ProfileBioView } from "@/components/directory/ProfileBioView";
 import { requireAuth, getCurrentProfile, toPublicProfile } from "@/lib/auth/helpers";
+import { getPageContent } from "@/lib/content";
 import { createClient } from "@/lib/supabase/server";
 
 type Props = {
@@ -36,6 +37,8 @@ export default async function DirectoryProfilePage({ params }: Props) {
   const publicProfile = toPublicProfile(profile);
   const isOwnProfile = profile.id === myProfile.id;
 
+  const pageCopy = getPageContent("participants");
+
   return (
     <div className="min-h-screen bg-cream-50 pb-24 md:pb-8">
       <AppNav />
@@ -53,6 +56,7 @@ export default async function DirectoryProfilePage({ params }: Props) {
           userId={user.id}
           initialStrength={connection?.strength ?? 0}
           isOwnProfile={isOwnProfile}
+          pageCopy={pageCopy}
         />
       </main>
     </div>

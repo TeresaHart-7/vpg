@@ -1,0 +1,5 @@
+{
+  "title": "Payment instructions",
+  "subtitle": "Payments are manual (e-transfer, Wise, PayPal, Venmo) — the app tracks status only.",
+  "emptyMessage": "Payment instructions will appear here once content is added."
+}

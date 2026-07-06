@@ -36,7 +36,7 @@ export async function requireAdmin() {
   return profile;
 }
 
-export async function getUnreadNotificationCount(): Promise<number> {
+export async function getUnreadAnnouncementCount(): Promise<number> {
   const supabase = await createClient();
   const user = await getCurrentUser();
   if (!user) return 0;
@@ -45,19 +45,35 @@ export async function getUnreadNotificationCount(): Promise<number> {
     .from("notifications")
     .select("*", { count: "exact", head: true })
     .eq("user_id", user.id)
+    .eq("type", "announcement")
     .is("read_at", null);
 
   return count ?? 0;
 }
 
-export async function getContentBlock(key: string): Promise<string | null> {
+export async function getUnreadMessageCount(userId: string): Promise<number> {
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("admin_content_blocks")
-    .select("content")
-    .eq("key", key)
-    .single();
-  return data?.content ?? null;
+
+  const { data: threads } = await supabase
+    .from("threads")
+    .select("id, type, participant_ids")
+    .in("type", ["topic_chat", "dm"]);
+
+  const visible = (threads || []).filter(
+    (t) => t.type === "topic_chat" || t.participant_ids?.includes(userId)
+  );
+  const ids = visible.map((t) => t.id);
+  if (!ids.length) return 0;
+
+  const { getUnreadThreadIds } = await import("@/lib/thread-reads");
+  const unread = await getUnreadThreadIds(supabase, userId, ids);
+  return unread.size;
+}
+
+import { getSiteContentBlock } from "@/lib/content";
+
+export async function getContentBlock(key: string): Promise<string | null> {
+  return getSiteContentBlock(key);
 }
 
 /** Strip private fields when viewing another participant's profile */

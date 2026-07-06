@@ -24,6 +24,7 @@ export const profileLogisticsSchema = z.object({
   bunk_preference: z.string().optional(),
   needs_bedding: z.boolean().optional().nullable(),
   has_extra_bedding: z.boolean().optional().nullable(),
+  bedding_details: z.string().optional(),
   dietary_restrictions: z.string().optional(),
   other_needs: z.string().optional(),
 });

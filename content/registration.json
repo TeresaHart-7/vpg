@@ -1,0 +1,55 @@
+{
+  "page": {
+    "title": "Registration",
+    "subtitle": "Take your time — your progress saves as you go."
+  },
+  "profile": {
+    "title": "Your public profile",
+    "subtitle": "Only name is required. Everything else helps the village know you.",
+    "linkedGuestsTitle": "Who are you bringing?",
+    "linkedGuestsSubtitle": "Add family or friends who aren't registering separately."
+  },
+  "coCreate": {
+    "title": "Co-create with us",
+    "subtitle": "Let us know how you might imagine yourself helping out around the village. We may follow up to clarify or go deeper.",
+    "coThinkingTitle": "Co-thinking around design",
+    "coThinkingSubtitle": "We'll host multiple calls before the gathering to think about design and processes.",
+    "operationalTitle": "Operational support"
+  },
+  "payments": {
+    "title": "Payments",
+    "intro": "Payments are due by Aug 31. The payments for this gathering go to paying the camp, supplies and buffering financial assistance. With this cost-sharing set up, some participants may pay less and some may pay more. Overall we hope to have our costs fully covered, without collecting surplus.",
+    "privacyNote": "Private — only you and the host crew can see this section.",
+    "financialLabel": "Would you prefer to pay a different amount based on your current financial situation?",
+    "financialHint": "More, to support others being able to join us, or less, as you need. Consider honouring the value you think you will receive, contributing to the community and what would feel easeful for your financial body.",
+    "extraLabel": "Do you have extra to contribute?",
+    "sentCheckbox": "I have sent my payment",
+    "aug31Checkbox": "I will pay by Aug 31"
+  },
+  "logistics": {
+    "title": "Logistics",
+    "subtitle": "Private — helps us coordinate cabins, bedding, and meals.",
+    "bunkHint": "Cabins have 6–12 bunks. We'll try to arrange you with your preferred crew & likely others, once everyone has registered.",
+    "beddingDetailsLabel": "Bedding details",
+    "beddingDetailsHint": "How much do you need or have? Anything specific (twin sheets, sleeping bag, pillow, etc.)?"
+  },
+  "complete": {
+    "title": "You're registered!",
+    "body": "Thank you for sharing your profile. You can come back anytime to update your answers — there's no cutoff date.",
+    "editPrompt": "Want to change something?",
+    "dashboardButton": "Go to your dashboard"
+  },
+  "coCreationDomains": [
+    {
+      "value": "unifying_ground",
+      "label": "Design of structures and processes to enable bridging of perspectives",
+      "icon": "Bridge"
+    },
+    {
+      "value": "schedule_design",
+      "label": "More concretely, what might our schedule and events look like?",
+      "icon": "CalendarBlank"
+    }
+  ],
+  "datesNotComingHint": "Dates cleared because you selected \"Not this time.\""
+}

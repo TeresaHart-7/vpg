@@ -4,11 +4,31 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ComingBadge } from "@/components/ui/StatusBadge";
 import { requireAuth, getCurrentProfile } from "@/lib/auth/helpers";
+import { getPageContent } from "@/lib/content";
 import { createClient } from "@/lib/supabase/server";
+
+type DashboardCard = {
+  id: string;
+  title: string;
+  description?: string;
+  descriptionComplete?: string;
+  descriptionIncomplete?: string;
+  descriptionSingular?: string;
+  descriptionPlural?: string;
+  button?: string;
+  buttonComplete?: string;
+  buttonIncomplete?: string;
+  href?: string;
+  tint?: string;
+  dynamic?: string;
+  adminOnly?: boolean;
+};
 
 export default async function DashboardPage() {
   await requireAuth();
   const profile = await getCurrentProfile();
+  const copy = getPageContent("dashboard");
+  const cards = (copy.cards as DashboardCard[]) || [];
   const supabase = await createClient();
 
   const { count: guestCount } = await supabase
@@ -16,111 +36,79 @@ export default async function DashboardPage() {
     .select("*", { count: "exact", head: true })
     .eq("parent_profile_id", profile!.id);
 
+  const titlePrefix = copy.title as string;
+  const useName = copy.titleUsesName as boolean;
+
   return (
     <div className="min-h-screen bg-cream-50 pb-24 md:pb-8">
       <AppNav />
       <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
         <h1 className="text-display-lg">
-          Welcome{profile?.name ? `, ${profile.name.split(" ")[0]}` : ""}
+          {titlePrefix}
+          {useName && profile?.name ? `, ${profile.name.split(" ")[0]}` : ""}
         </h1>
-        <p className="mt-2 text-body-md text-ink-600">
-          Your home base for the Village Playground gathering.
-        </p>
+        <p className="mt-2 text-body-md text-ink-600">{copy.subtitle as string}</p>
 
         <div className="mt-8 space-y-4">
-          <Card tint="lavender">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <h2 className="text-display-sm">Registration</h2>
-                <p className="mt-1 text-body-sm text-ink-600">
-                  {profile?.registration_complete
-                    ? "Your registration is complete. You can still edit anytime."
-                    : "Finish your profile so the host crew can plan."}
-                </p>
-                {profile?.is_coming && (
-                  <div className="mt-3">
-                    <ComingBadge isComing={profile.is_coming} />
+          {cards.map((card) => {
+            if (card.adminOnly && !profile?.is_admin) return null;
+            if (card.dynamic === "guestCount" && (!guestCount || guestCount === 0)) return null;
+
+            const tint = (card.tint || "white") as "lavender" | "peach" | "teal" | "sage" | "white";
+            let description = card.description || "";
+            if (card.id === "registration") {
+              description = profile?.registration_complete
+                ? card.descriptionComplete || description
+                : card.descriptionIncomplete || description;
+            }
+            if (card.dynamic === "guestCount" && guestCount) {
+              description =
+                guestCount === 1
+                  ? card.descriptionSingular || description
+                  : (card.descriptionPlural || description).replace("{count}", String(guestCount));
+            }
+
+            const buttonLabel =
+              card.id === "registration"
+                ? profile?.registration_complete
+                  ? card.buttonComplete
+                  : card.buttonIncomplete
+                : card.button;
+
+            return (
+              <Card key={card.id} tint={tint}>
+                {card.href ? (
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-display-sm">{card.title}</h2>
+                      <p className="mt-1 text-body-sm text-ink-600">{description}</p>
+                      {card.id === "registration" && profile?.is_coming && (
+                        <div className="mt-3">
+                          <ComingBadge isComing={profile.is_coming} />
+                        </div>
+                      )}
+                    </div>
+                    <Link href={card.href}>
+                      <Button
+                        variant={
+                          card.id === "registration" && !profile?.registration_complete
+                            ? "primary"
+                            : "secondary"
+                        }
+                      >
+                        {buttonLabel}
+                      </Button>
+                    </Link>
                   </div>
+                ) : (
+                  <>
+                    <h2 className="text-display-sm">{card.title}</h2>
+                    <p className="mt-1 text-body-sm text-ink-600">{description}</p>
+                  </>
                 )}
-              </div>
-              <Link href="/register">
-                <Button variant={profile?.registration_complete ? "secondary" : "primary"}>
-                  {profile?.registration_complete ? "Edit profile" : "Continue registration"}
-                </Button>
-              </Link>
-            </div>
-          </Card>
-
-          <Card tint="peach">
-            <h2 className="text-display-sm">Payment</h2>
-            <p className="mt-1 text-body-sm text-ink-600">
-              $350 CAD for 4 days · e-transfer preferred
-            </p>
-            <Link href="/payment" className="mt-4 inline-block">
-              <Button variant="secondary">View payment instructions</Button>
-            </Link>
-          </Card>
-
-          <Card tint="teal">
-            <h2 className="text-display-sm">Participant guide</h2>
-            <p className="mt-1 text-body-sm text-ink-600">
-              Location, packing list, food, and getting to camp.
-            </p>
-            <Link href="/guide" className="mt-4 inline-block">
-              <Button variant="secondary">Open guide</Button>
-            </Link>
-          </Card>
-
-          <Card tint="lavender">
-            <h2 className="text-display-sm">At camp</h2>
-            <p className="mt-1 text-body-sm text-ink-600">
-              Schedule, map, agreements, announcements, and chat.
-            </p>
-            <Link href="/event" className="mt-4 inline-block">
-              <Button variant="secondary">Open event hub</Button>
-            </Link>
-          </Card>
-
-          <Card tint="lavender">
-            <h2 className="text-display-sm">Directory &amp; network</h2>
-            <p className="mt-1 text-body-sm text-ink-600">
-              Browse who&apos;s coming and map your connections in the village.
-            </p>
-            <Link href="/directory" className="mt-4 inline-block">
-              <Button variant="secondary">Open directory</Button>
-            </Link>
-          </Card>
-
-          <Card tint="sage">
-            <h2 className="text-display-sm">Logistics hub</h2>
-            <p className="mt-1 text-body-sm text-ink-600">
-              Coordinate rides, bedding, and supplies with other participants.
-            </p>
-            <Link href="/logistics" className="mt-4 inline-block">
-              <Button variant="secondary">Open logistics hub</Button>
-            </Link>
-          </Card>
-
-          {guestCount !== null && guestCount > 0 && (
-            <Card tint="sage">
-              <h2 className="text-display-sm">People you&apos;re bringing</h2>
-              <p className="mt-1 text-body-sm text-ink-600">
-                {guestCount} linked {guestCount === 1 ? "guest" : "guests"}
-              </p>
-            </Card>
-          )}
-
-          {profile?.is_admin && (
-            <Card tint="teal">
-              <h2 className="text-display-sm">Admin</h2>
-              <p className="mt-1 text-body-sm text-ink-600">
-                View and edit all participant registrations.
-              </p>
-              <Link href="/admin" className="mt-4 inline-block">
-                <Button variant="secondary">Open admin table</Button>
-              </Link>
-            </Card>
-          )}
+              </Card>
+            );
+          })}
         </div>
       </main>
     </div>

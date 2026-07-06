@@ -1,0 +1,13 @@
+{
+  "title": "Logistics",
+  "subtitle": "Everything you need for camp - plus coordination with the village.",
+  "participantInfo": {
+    "title": "Participant info",
+    "subtitle": "Dates, location, food, and what to bring for Camp Ki-Wa-Y.",
+    "checklistButton": "Printable packing checklist"
+  },
+  "coordination": {
+    "title": "Coordination",
+    "subtitle": "Coordinate travel, accommodation, and supplies with other participants."
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "title": "Welcome",
+  "titleUsesName": true,
+  "subtitle": "Your home base for the Village Playground gathering.",
+  "cards": [
+    {
+      "id": "registration",
+      "title": "Registration",
+      "descriptionComplete": "Your registration is complete. You can still edit anytime.",
+      "descriptionIncomplete": "Finish your profile so the host crew can plan.",
+      "buttonComplete": "Edit profile",
+      "buttonIncomplete": "Continue registration",
+      "href": "/register",
+      "tint": "lavender"
+    },
+    {
+      "id": "payment",
+      "title": "Payment",
+      "description": "$400 CAD full event · $350 for ages 5–18 · e-transfer preferred",
+      "button": "View payment instructions",
+      "href": "/payment",
+      "tint": "peach"
+    },
+    {
+      "id": "logistics",
+      "title": "Logistics",
+      "description": "Participant info, packing checklist, and village coordination.",
+      "button": "Open logistics",
+      "href": "/logistics",
+      "tint": "teal"
+    },
+    {
+      "id": "event",
+      "title": "At camp",
+      "description": "Schedule, map, and camp agreements.",
+      "button": "Open event hub",
+      "href": "/event",
+      "tint": "lavender"
+    },
+    {
+      "id": "participants",
+      "title": "Participants & network",
+      "description": "Browse who's coming and map your connections in the village.",
+      "button": "View participants",
+      "href": "/directory",
+      "tint": "lavender"
+    },
+    {
+      "id": "messages",
+      "title": "Messages",
+      "description": "Topic threads, direct messages, and announcements.",
+      "button": "Open messages",
+      "href": "/messages",
+      "tint": "sage"
+    },
+    {
+      "id": "guests",
+      "title": "People you're bringing",
+      "descriptionSingular": "1 linked guest",
+      "descriptionPlural": "{count} linked guests",
+      "tint": "sage",
+      "dynamic": "guestCount"
+    },
+    {
+      "id": "admin",
+      "title": "Admin",
+      "description": "View and edit all participant registrations.",
+      "button": "Open admin table",
+      "href": "/admin",
+      "tint": "teal",
+      "adminOnly": true
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { DirectoryList } from "@/components/directory/DirectoryList";
 import { NetworkMap } from "@/components/directory/NetworkMap";
+import type { PageContent } from "@/lib/content";
 import type { ProfilePublic } from "@/lib/types/database";
 
 type View = "list" | "map";
@@ -16,6 +17,7 @@ type Props = {
   userId: string;
   initialConnections: { profile_id_b: string; strength: number }[];
   graphLinks: { source: string; target: string; strength: number }[];
+  pageCopy: PageContent;
   initialView?: View;
 };
 
@@ -26,6 +28,7 @@ export function DirectoryView({
   userId,
   initialConnections,
   graphLinks,
+  pageCopy,
   initialView = "list",
 }: Props) {
   const router = useRouter();
@@ -57,6 +60,7 @@ export function DirectoryView({
           myProfileId={myProfileId}
           userId={userId}
           initialConnections={initialConnections}
+          pageCopy={pageCopy}
         />
       ) : (
         <NetworkMap

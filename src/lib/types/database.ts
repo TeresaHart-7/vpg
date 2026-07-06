@@ -16,6 +16,7 @@ export type Profile = {
   bunk_preference: string | null;
   needs_bedding: boolean | null;
   has_extra_bedding: boolean | null;
+  bedding_details: string | null;
   dietary_restrictions: string | null;
   other_needs: string | null;
   needs_financial_assistance: string | null;

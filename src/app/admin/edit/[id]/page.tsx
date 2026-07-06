@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { AppNav } from "@/components/layout/AppNav";
 import { RegistrationForm } from "@/components/registration/RegistrationForm";
 import { requireAdmin, getContentBlock } from "@/lib/auth/helpers";
+import { getRegistrationCopy } from "@/lib/content";
 import { createClient } from "@/lib/supabase/server";
 import type { Profile } from "@/lib/types/database";
 
@@ -36,6 +37,7 @@ export default async function AdminEditPage({ params }: Props) {
     ]);
 
   const paymentInstructions = await getContentBlock("payment_instructions");
+  const copy = getRegistrationCopy();
 
   return (
     <div className="min-h-screen bg-cream-50 pb-24 md:pb-8">
@@ -50,6 +52,7 @@ export default async function AdminEditPage({ params }: Props) {
             coCreationDomains={(coCreation || []).map((c) => c.domain)}
             operationalShifts={(operational || []).map((o) => o.shift_type)}
             paymentInstructions={paymentInstructions}
+            copy={copy}
             isAdminEdit
             editProfileId={id}
             initialStep="profile"

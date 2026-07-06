@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { formatMessageTime } from "@/lib/chat";
+import { markThreadRead } from "@/lib/thread-reads";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
 import { cn } from "@/lib/utils";
@@ -36,6 +37,11 @@ export function ChatView({
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    void markThreadRead(supabase, userId, threadId);
+  }, [threadId, userId]);
 
   useEffect(() => {
     const supabase = createClient();

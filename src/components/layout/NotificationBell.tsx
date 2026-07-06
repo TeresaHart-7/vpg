@@ -29,6 +29,7 @@ export function NotificationBell({ initialCount }: Props) {
     const { data } = await supabase
       .from("notifications")
       .select("*")
+      .eq("type", "announcement")
       .order("created_at", { ascending: false })
       .limit(12);
     setItems((data || []) as AppNotification[]);
@@ -80,11 +81,11 @@ export function NotificationBell({ initialCount }: Props) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink-600 hover:bg-lavender-50 hover:text-plum-500"
-        aria-label={`Notifications${unread ? `, ${unread} unread` : ""}`}
+        aria-label={`Announcements${unread ? `, ${unread} unread` : ""}`}
       >
         <Bell size={20} />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-peach-500 px-1 text-[10px] font-bold text-white">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-peach-600 px-1 text-[10px] font-bold text-white">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
@@ -101,7 +102,7 @@ export function NotificationBell({ initialCount }: Props) {
           <div className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-lg border border-lavender-100 bg-white p-3 shadow-modal">
             <div className="mb-2 flex items-center justify-between px-1">
               <span className="text-body-sm font-semibold text-ink-900">
-                Notifications
+                Announcements
               </span>
               {unread > 0 && (
                 <button
@@ -116,7 +117,7 @@ export function NotificationBell({ initialCount }: Props) {
             <ul className="max-h-80 space-y-1 overflow-y-auto">
               {items.length === 0 ? (
                 <li className="px-2 py-4 text-body-sm text-ink-600">
-                  No notifications yet.
+                  No announcements yet.
                 </li>
               ) : (
                 items.map((n) => (

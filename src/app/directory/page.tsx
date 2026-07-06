@@ -2,6 +2,7 @@ import { AppNav } from "@/components/layout/AppNav";
 import { DirectoryView } from "@/components/directory/DirectoryView";
 import { requireAuth, getCurrentProfile } from "@/lib/auth/helpers";
 import { createClient } from "@/lib/supabase/server";
+import { getPageContent } from "@/lib/content";
 import type { ProfilePublic } from "@/lib/types/database";
 
 function buildGraphLinks(
@@ -59,14 +60,14 @@ export default async function DirectoryPage() {
     )
   );
 
+  const pageCopy = getPageContent("participants");
+
   return (
     <div className="min-h-screen bg-cream-50 pb-24 md:pb-8">
       <AppNav />
       <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-        <h1 className="text-display-lg">Directory</h1>
-        <p className="mt-2 text-body-md text-ink-600">
-          Meet the village — browse profiles and map how you&apos;re connected.
-        </p>
+        <h1 className="text-display-lg">{pageCopy.title as string}</h1>
+        <p className="mt-2 text-body-md text-ink-600">{pageCopy.subtitle as string}</p>
         <div className="mt-8">
           <DirectoryView
             profiles={publicProfiles}
@@ -75,6 +76,7 @@ export default async function DirectoryPage() {
             userId={user.id}
             initialConnections={myConnections || []}
             graphLinks={graphLinks}
+            pageCopy={pageCopy}
           />
         </div>
       </main>

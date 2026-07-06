@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,13 +11,14 @@ import {
 } from "@/lib/schemas/registration";
 import {
   COMING_OPTIONS,
-  CO_CREATION_DOMAINS,
   GATHERING_DATES,
   DEFAULT_DATES,
   OPERATIONAL_SHIFTS,
+  REGISTRATION_STEPS,
   type RegistrationStepId,
 } from "@/lib/constants";
 import type { Profile, LinkedGuest } from "@/lib/types/database";
+import type { RegistrationCopy } from "@/lib/content";
 import { RegistrationProgressBar } from "@/components/registration/ProgressBar";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -25,6 +26,7 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Card } from "@/components/ui/Card";
 import { DateChipSelector } from "@/components/ui/DateChipSelector";
+import { SelectionPill } from "@/components/ui/SelectionPill";
 import { markdownToHtml } from "@/lib/utils";
 import { Plus, Trash } from "@phosphor-icons/react";
 import { CoCreationIcon } from "@/components/registration/CoCreationIcon";
@@ -53,6 +55,7 @@ type Props = {
   coCreationDomains: string[];
   operationalShifts: string[];
   paymentInstructions: string | null;
+  copy: RegistrationCopy;
   initialStep?: RegistrationStepId;
   isAdminEdit?: boolean;
   editProfileId?: string;
@@ -77,6 +80,7 @@ function profileToForm(profile: Profile): RegistrationFormData {
     bunk_preference: profile.bunk_preference || "",
     needs_bedding: profile.needs_bedding ?? undefined,
     has_extra_bedding: profile.has_extra_bedding ?? undefined,
+    bedding_details: profile.bedding_details || "",
     dietary_restrictions: profile.dietary_restrictions || "",
     other_needs: profile.other_needs || "",
     co_creation_domains: [],
@@ -90,6 +94,7 @@ export function RegistrationForm({
   coCreationDomains: initialCoCreation,
   operationalShifts: initialOperational,
   paymentInstructions,
+  copy,
   initialStep = "profile",
   isAdminEdit = false,
   editProfileId,
@@ -106,7 +111,8 @@ export function RegistrationForm({
     }))
   );
   const [submitting, setSubmitting] = useState(false);
-  const [complete, setComplete] = useState(profile.registration_complete);
+  const [justCompleted, setJustCompleted] = useState(false);
+  const savedDatesRef = useRef<string[]>([...DEFAULT_DATES]);
 
   const targetProfileId = editProfileId || profile.id;
 
@@ -147,6 +153,7 @@ export function RegistrationForm({
         bunk_preference: values.bunk_preference || null,
         needs_bedding: values.needs_bedding ?? null,
         has_extra_bedding: values.has_extra_bedding ?? null,
+        bedding_details: values.bedding_details || null,
         dietary_restrictions: values.dietary_restrictions || null,
         other_needs: values.other_needs || null,
         updated_at: new Date().toISOString(),
@@ -272,7 +279,7 @@ export function RegistrationForm({
       router.refresh();
       return;
     }
-    setComplete(true);
+    setJustCompleted(true);
     router.refresh();
   };
 
@@ -285,16 +292,28 @@ export function RegistrationForm({
     setLinkedGuests((prev) => prev.filter((_, i) => i !== index));
   };
 
-  if (complete && !isAdminEdit) {
+  if (justCompleted && !isAdminEdit) {
     return (
       <Card tint="sage" className="text-center">
-        <h2 className="text-display-md">You&apos;re registered!</h2>
-        <p className="mt-3 text-body-md text-ink-600">
-          Thank you for sharing your profile. You can come back anytime to update
-          your answers — there&apos;s no cutoff date.
-        </p>
+        <h2 className="text-display-md">{copy.complete.title}</h2>
+        <p className="mt-3 text-body-md text-ink-600">{copy.complete.body}</p>
+        <p className="mt-4 text-body-sm text-ink-600">{copy.complete.editPrompt}</p>
+        <div className="mt-3 flex flex-wrap justify-center gap-2">
+          {REGISTRATION_STEPS.map((s) => (
+            <Button
+              key={s.id}
+              variant="secondary"
+              onClick={() => {
+                setJustCompleted(false);
+                setStep(s.id);
+              }}
+            >
+              Edit {s.label.toLowerCase()}
+            </Button>
+          ))}
+        </div>
         <Button className="mt-6" onClick={() => router.push("/dashboard")}>
-          Go to your dashboard
+          {copy.complete.dashboardButton}
         </Button>
       </Card>
     );
@@ -319,10 +338,8 @@ export function RegistrationForm({
         {step === "profile" && (
           <div className="space-y-5" onBlur={handleBlur}>
             <div>
-              <h2 className="text-display-md">Your public profile</h2>
-              <p className="mt-1 text-body-sm text-ink-600">
-                Only name is required. Everything else helps the village know you.
-              </p>
+              <h2 className="text-display-md">{copy.profile.title}</h2>
+              <p className="mt-1 text-body-sm text-ink-600">{copy.profile.subtitle}</p>
             </div>
 
             <Input
@@ -347,24 +364,43 @@ export function RegistrationForm({
               {...register("bio")}
             />
 
-            <div>
-              <p className="text-label mb-2 text-ink-600">Are you coming?</p>
-              <div className="flex flex-wrap gap-2">
-                {COMING_OPTIONS.map((opt) => (
-                  <label key={opt.value} className="cursor-pointer">
-                    <input
-                      type="radio"
-                      value={opt.value}
-                      className="peer sr-only"
-                      {...register("is_coming")}
-                    />
-                    <span className="inline-block rounded-pill border border-lavender-300 px-4 py-2 text-body-sm peer-checked:border-plum-500 peer-checked:bg-plum-100 peer-checked:text-plum-700">
-                      {opt.label}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            <Controller
+              control={control}
+              name="is_coming"
+              render={({ field }) => (
+                <div>
+                  <p className="text-label mb-2 text-ink-600">Are you coming?</p>
+                  <div className="flex flex-wrap gap-2">
+                    {COMING_OPTIONS.map((opt) => (
+                      <SelectionPill
+                        key={opt.value}
+                        selected={field.value === opt.value}
+                        onClick={() => {
+                          field.onChange(opt.value);
+                          if (opt.value === "no") {
+                            const current = getValues("dates");
+                            if (current.length) savedDatesRef.current = current;
+                            setValue("dates", []);
+                          } else if (opt.value === "yes") {
+                            const current = getValues("dates");
+                            if (!current.length) {
+                              setValue(
+                                "dates",
+                                savedDatesRef.current.length
+                                  ? savedDatesRef.current
+                                  : [...DEFAULT_DATES]
+                              );
+                            }
+                          }
+                        }}
+                      >
+                        {opt.label}
+                      </SelectionPill>
+                    ))}
+                  </div>
+                </div>
+              )}
+            />
 
             <Controller
               control={control}
@@ -374,6 +410,8 @@ export function RegistrationForm({
                   dates={GATHERING_DATES}
                   selected={field.value}
                   onChange={field.onChange}
+                  disabled={watch("is_coming") === "no"}
+                  notComingHint={copy.datesNotComingHint}
                 />
               )}
             />
@@ -393,9 +431,9 @@ export function RegistrationForm({
             />
 
             <div className="border-t border-lavender-100 pt-5">
-              <h3 className="text-display-sm">Who are you bringing?</h3>
+              <h3 className="text-display-sm">{copy.profile.linkedGuestsTitle}</h3>
               <p className="mt-1 text-body-sm italic text-ink-600">
-                Add family or friends who aren&apos;t registering separately.
+                {copy.profile.linkedGuestsSubtitle}
               </p>
               <div className="mt-4 space-y-3">
                 {linkedGuests.map((guest, index) => (
@@ -448,17 +486,17 @@ export function RegistrationForm({
         {step === "co-create" && (
           <div className="space-y-6" onBlur={handleBlur}>
             <div>
-              <h2 className="text-display-md">Co-create with us</h2>
-              <p className="mt-2 text-body-sm italic text-ink-600">
-                This isn&apos;t a locked-in sign-up — saying yes here just means
-                you might end up on a collaborative team.
-              </p>
+              <h2 className="text-display-md">{copy.coCreate.title}</h2>
+              <p className="mt-2 text-body-sm italic text-ink-600">{copy.coCreate.subtitle}</p>
             </div>
 
             <div>
-              <h3 className="text-display-sm mb-3">Co-thinking around design</h3>
+              <h3 className="text-display-sm mb-1">{copy.coCreate.coThinkingTitle}</h3>
+              <p className="mb-3 text-body-sm italic text-ink-600">
+                {copy.coCreate.coThinkingSubtitle}
+              </p>
               <div className="grid gap-3 sm:grid-cols-2">
-                {CO_CREATION_DOMAINS.map((domain) => {
+                {copy.coCreationDomains.map((domain) => {
                   const selected = watch("co_creation_domains").includes(domain.value);
                   return (
                     <Checkbox
@@ -491,7 +529,7 @@ export function RegistrationForm({
             </div>
 
             <div>
-              <h3 className="text-display-sm mb-3">Operational support</h3>
+              <h3 className="text-display-sm mb-3">{copy.coCreate.operationalTitle}</h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 {OPERATIONAL_SHIFTS.map((shift) => {
                   const selected = watch("operational_shifts").includes(shift.value);
@@ -530,10 +568,9 @@ export function RegistrationForm({
         {step === "payments" && (
           <div className="space-y-5" onBlur={handleBlur}>
             <div>
-              <h2 className="text-display-md">Payments</h2>
-              <p className="mt-1 text-body-sm text-ink-600">
-                Private — only you and the host crew can see this section.
-              </p>
+              <h2 className="text-display-md">{copy.payments.title}</h2>
+              <p className="mt-1 text-body-sm text-ink-600">{copy.payments.intro}</p>
+              <p className="mt-2 text-body-sm text-ink-600">{copy.payments.privacyNote}</p>
             </div>
 
             {paymentInstructions && (
@@ -546,38 +583,31 @@ export function RegistrationForm({
             )}
 
             <Textarea
-              label="Do you need financial assistance?"
+              label={copy.payments.financialLabel}
+              hint={copy.payments.financialHint}
               value={watch("needs_financial_assistance") || ""}
               maxLength={500}
               {...register("needs_financial_assistance")}
             />
 
             <Textarea
-              label="Do you have extra to contribute?"
+              label={copy.payments.extraLabel}
               value={watch("has_extra_to_contribute") || ""}
               maxLength={500}
               {...register("has_extra_to_contribute")}
             />
 
-            <Checkbox
-              label="I have sent my payment"
-              {...register("payment_sent_checkbox")}
-            />
+            <Checkbox label={copy.payments.sentCheckbox} {...register("payment_sent_checkbox")} />
 
-            <Checkbox
-              label="I will pay by Aug 31"
-              {...register("will_pay_by_aug31_checkbox")}
-            />
+            <Checkbox label={copy.payments.aug31Checkbox} {...register("will_pay_by_aug31_checkbox")} />
           </div>
         )}
 
         {step === "logistics" && (
           <div className="space-y-5" onBlur={handleBlur}>
             <div>
-              <h2 className="text-display-md">Logistics</h2>
-              <p className="mt-1 text-body-sm text-ink-600">
-                Private — helps us coordinate cabins, bedding, and meals.
-              </p>
+              <h2 className="text-display-md">{copy.logistics.title}</h2>
+              <p className="mt-1 text-body-sm text-ink-600">{copy.logistics.subtitle}</p>
             </div>
 
             <Input
@@ -591,6 +621,7 @@ export function RegistrationForm({
 
             <Textarea
               label="Who do you want to bunk with?"
+              hint={copy.logistics.bunkHint}
               value={watch("bunk_preference") || ""}
               maxLength={300}
               {...register("bunk_preference")}
@@ -608,6 +639,16 @@ export function RegistrationForm({
                 onChange={(e) => setValue("has_extra_bedding", e.target.checked)}
               />
             </div>
+
+            {(watch("needs_bedding") || watch("has_extra_bedding")) && (
+              <Textarea
+                label={copy.logistics.beddingDetailsLabel}
+                hint={copy.logistics.beddingDetailsHint}
+                value={watch("bedding_details") || ""}
+                maxLength={500}
+                {...register("bedding_details")}
+              />
+            )}
 
             <Textarea
               label="Dietary restrictions"

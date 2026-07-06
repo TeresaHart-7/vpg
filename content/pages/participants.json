@@ -1,0 +1,16 @@
+{
+  "title": "Participants",
+  "subtitle": "Meet the village — browse profiles and map how you're connected.",
+  "connectionModalIntro": "No relationship fits neatly into a box. Pick whichever level feels closest, and don't overthink it.",
+  "connectionLevels": [
+    { "value": 1, "label": "We've met — our paths have crossed at least once." },
+    { "value": 2, "label": "We've connected a handful of times — a familiar face with some shared history." },
+    { "value": 3, "label": "We're close — there is warmth here and we've walked alongside each other over time." },
+    { "value": 4, "label": "We're very close — the inner circle, someone core to my life." }
+  ],
+  "connectionCelebration": {
+    "title": "You're connected!",
+    "body": "A new thread in the web."
+  },
+  "profileConnectionNote": "Only you see this rating — it helps build the village network map."
+}

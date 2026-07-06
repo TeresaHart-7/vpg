@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { setConnectionStrength, buildConnectionMap } from "@/lib/connections";
 import type { ProfilePublic } from "@/lib/types/database";
+import type { PageContent } from "@/lib/content";
 import { ParticipantCard } from "@/components/directory/ParticipantCard";
+import { ConnectionCelebration } from "@/components/directory/ConnectionCelebration";
 import { Input } from "@/components/ui/Input";
 
 type Props = {
@@ -13,6 +15,7 @@ type Props = {
   myProfileId: string;
   userId: string;
   initialConnections: { profile_id_b: string; strength: number }[];
+  pageCopy: PageContent;
 };
 
 export function DirectoryList({
@@ -20,9 +23,11 @@ export function DirectoryList({
   myProfileId,
   userId,
   initialConnections,
+  pageCopy,
 }: Props) {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [celebrate, setCelebrate] = useState(false);
   const [connectionMap, setConnectionMap] = useState(
     () => buildConnectionMap(initialConnections)
   );
@@ -38,7 +43,7 @@ export function DirectoryList({
     );
   }, [profiles, search]);
 
-  const handleConnectionChange = useCallback(
+  const handleConnectionSave = useCallback(
     async (theirProfileId: string, strength: number) => {
       const prev = connectionMap.get(theirProfileId) ?? 0;
       setConnectionMap((m) => {
@@ -65,10 +70,14 @@ export function DirectoryList({
           else next.set(theirProfileId, prev);
           return next;
         });
+        throw new Error("Failed to save");
       }
     },
     [connectionMap, myProfileId, router, userId]
   );
+
+  const celebration = pageCopy.connectionCelebration as { title: string; body: string };
+  const connectionLevels = pageCopy.connectionLevels as { value: number; label: string }[];
 
   return (
     <div className="space-y-6">
@@ -88,11 +97,16 @@ export function DirectoryList({
               profile={profile}
               href={`/directory/${profile.id}`}
               connectionStrength={connectionMap.get(profile.id) ?? 0}
-              onConnectionChange={
+              onConnectionSave={
                 profile.id === myProfileId
                   ? undefined
-                  : (strength) => handleConnectionChange(profile.id, strength)
+                  : async (strength) => {
+                      await handleConnectionSave(profile.id, strength);
+                    }
               }
+              onConnectionCelebration={() => setCelebrate(true)}
+              connectionIntro={pageCopy.connectionModalIntro as string}
+              connectionLevels={connectionLevels}
             />
           </li>
         ))}
@@ -100,6 +114,12 @@ export function DirectoryList({
       {filtered.length === 0 && (
         <p className="text-body-md text-ink-600">No matches for your search.</p>
       )}
+      <ConnectionCelebration
+        show={celebrate}
+        onDone={() => setCelebrate(false)}
+        title={celebration?.title}
+        body={celebration?.body}
+      />
     </div>
   );
 }
