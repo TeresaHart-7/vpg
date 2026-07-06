@@ -24,7 +24,7 @@ const EDITABLE_BLOCKS: Block[] = [
   {
     key: "camp_map",
     label: "Camp map (JSON)",
-    hint: 'e.g. {"imageUrl":"/camp-map.svg","caption":"..."}',
+    hint: 'e.g. {"imageUrl":"/images/site-map.png","caption":"..."}',
     rows: 4,
   },
   {
