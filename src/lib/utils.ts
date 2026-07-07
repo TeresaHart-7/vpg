@@ -10,7 +10,7 @@ function linkify(text: string): string {
   );
 
   return withMarkdownLinks.replace(
-    /(https?:\/\/[^\s<"]+|paypal\.me\/[^\s<"]+|(?<![\w.])@[\w-]+)/g,
+    /(?:https?:\/\/[^\s<"]+|paypal\.me\/[^\s<"]+|(?<![\w.])@[\w-]+)/g,
     (match, offset, full) => {
       const before = full.slice(0, offset);
       if (before.lastIndexOf("<") > before.lastIndexOf(">")) return match;
