@@ -10,8 +10,11 @@ function linkify(text: string): string {
   );
 
   return withMarkdownLinks.replace(
-    /(https?:\/\/[^\s<]+|paypal\.me\/[^\s<]+|(?<![\w.])@[\w-]+)/g,
-    (match) => {
+    /(https?:\/\/[^\s<"]+|paypal\.me\/[^\s<"]+|(?<![\w.])@[\w-]+)/g,
+    (match, offset, full) => {
+      const before = full.slice(0, offset);
+      if (before.lastIndexOf("<") > before.lastIndexOf(">")) return match;
+
       const href = match.startsWith("@")
         ? `https://venmo.com/${match.slice(1)}`
         : match.startsWith("http")
