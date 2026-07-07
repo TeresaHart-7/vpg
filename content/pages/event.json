@@ -3,6 +3,7 @@
   "subtitle": "Schedule and map — lightweight for spotty cell service.",
   "sections": [
     { "label": "Schedule", "description": "Daily program", "href": "/event/schedule" },
+    { "label": "Sessions", "description": "Propose & vote on activities", "href": "/event/sessions" },
     { "label": "Map", "description": "Camp layout", "href": "/event/map" }
   ]
 }

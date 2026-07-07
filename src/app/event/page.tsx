@@ -7,10 +7,12 @@ import { getPageContent } from "@/lib/content";
 import {
   CalendarBlank,
   MapTrifold,
+  Sparkle,
 } from "@phosphor-icons/react/dist/ssr";
 
 const ICONS = {
   Schedule: CalendarBlank,
+  Sessions: Sparkle,
   Map: MapTrifold,
 } as const;
 

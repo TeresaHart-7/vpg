@@ -16,6 +16,13 @@ function formatNotification(n: AppNotification) {
   const p = n.payload;
   switch (n.type) {
     case "reply":
+      if (p.source === "session" || p.session_id) {
+        return {
+          title: "Comment on your session",
+          body: `Someone commented on "${String(p.title || "your session")}"`,
+          href: `/event/sessions?session=${p.session_id}`,
+        };
+      }
       return {
         title: "Reply to your logistics post",
         body: `Someone replied to "${String(p.title || "your post")}"`,

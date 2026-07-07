@@ -2,6 +2,7 @@ const CACHE = "vpg-event-v1";
 const OFFLINE_URLS = [
   "/event",
   "/event/schedule",
+  "/event/sessions",
   "/event/map",
   "/event/agreements",
   "/messages/announcements",
