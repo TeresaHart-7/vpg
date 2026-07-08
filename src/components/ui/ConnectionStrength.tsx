@@ -27,18 +27,24 @@ export function ConnectionStrength({
         {[1, 2, 3, 4].map((level) => {
           const size = sizes[level - 1];
           const filled = level <= value;
+          const dotClass = cn(
+            "rounded-full",
+            filled ? "bg-plum-500" : "bg-lavender-100"
+          );
+          const dotStyle = { width: size, height: size };
+          if (readOnly || !onChange) {
+            // Inert spans (not disabled buttons, which swallow clicks) so
+            // clicks on the dots fall through to any wrapping control, e.g.
+            // the card button that opens the connection dialog.
+            return <span key={level} className={dotClass} style={dotStyle} />;
+          }
           return (
             <button
               key={level}
               type="button"
-              disabled={readOnly || !onChange}
-              onClick={() => onChange?.(level === value ? 0 : level)}
-              className={cn(
-                "rounded-full transition-transform active:scale-110",
-                filled ? "bg-plum-500" : "bg-lavender-100",
-                readOnly && "cursor-default"
-              )}
-              style={{ width: size, height: size }}
+              onClick={() => onChange(level === value ? 0 : level)}
+              className={cn(dotClass, "transition-transform active:scale-110")}
+              style={dotStyle}
               aria-label={`Strength ${level}`}
             />
           );
