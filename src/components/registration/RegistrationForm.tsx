@@ -47,7 +47,7 @@ const stepTints = {
   logistics: "teal",
 } as const;
 
-type LinkedGuestDraft = { id?: string; name: string; bio?: string; claim_token?: string };
+type LinkedGuestDraft = { id: string; name: string; bio?: string; claim_token?: string };
 
 type Props = {
   profile: Profile;
@@ -113,6 +113,7 @@ export function RegistrationForm({
   const [submitting, setSubmitting] = useState(false);
   const [justCompleted, setJustCompleted] = useState(false);
   const savedDatesRef = useRef<string[]>([...DEFAULT_DATES]);
+  const saveChainRef = useRef<Promise<void>>(Promise.resolve());
 
   const targetProfileId = editProfileId || profile.id;
 
@@ -128,7 +129,7 @@ export function RegistrationForm({
   const { register, control, watch, setValue, getValues, trigger, formState: { errors } } = form;
   const bio = watch("bio") || "";
 
-  const saveProfile = useCallback(async () => {
+  const runSave = useCallback(async () => {
     setSaveStatus("saving");
     const values = getValues();
     const supabase = createClient();
@@ -166,37 +167,31 @@ export function RegistrationForm({
       return;
     }
 
-    // Sync linked guests
+    // Sync linked guests. Drafts carry a client-generated id, so this upsert
+    // is idempotent — a save that runs twice writes the same row instead of
+    // inserting a duplicate.
     for (const guest of linkedGuests) {
       if (!guest.name.trim()) continue;
-      if (guest.id) {
-        await supabase
-          .from("linked_guests")
-          .update({ name: guest.name, bio: guest.bio || null })
-          .eq("id", guest.id);
-      } else {
-        const { data: inserted } = await supabase
-          .from("linked_guests")
-          .insert({
-            parent_profile_id: targetProfileId,
-            name: guest.name,
-            bio: guest.bio || null,
-            prepopulated_from_parent: {
-              location_from: values.location_from,
-              dates: values.dates,
-            },
-          })
-          .select("id, claim_token")
-          .single();
-        if (inserted) {
-          setLinkedGuests((prev) =>
-            prev.map((g) =>
-              g.name === guest.name && !g.id
-                ? { ...g, id: inserted.id, claim_token: inserted.claim_token }
-                : g
-            )
-          );
-        }
+      const { data: saved } = await supabase
+        .from("linked_guests")
+        .upsert({
+          id: guest.id,
+          parent_profile_id: targetProfileId,
+          name: guest.name,
+          bio: guest.bio || null,
+          prepopulated_from_parent: {
+            location_from: values.location_from,
+            dates: values.dates,
+          },
+        })
+        .select("id, claim_token")
+        .single();
+      if (saved && !guest.claim_token) {
+        setLinkedGuests((prev) =>
+          prev.map((g) =>
+            g.id === saved.id ? { ...g, claim_token: saved.claim_token } : g
+          )
+        );
       }
     }
 
@@ -230,6 +225,14 @@ export function RegistrationForm({
     setSaveStatus("saved");
     setTimeout(() => setSaveStatus("idle"), 2000);
   }, [getValues, linkedGuests, targetProfileId]);
+
+  // Serialize saves. A field blur and a "Save & continue" click fire nearly
+  // simultaneously, and overlapping runs used to insert linked guests twice.
+  const saveProfile = useCallback(() => {
+    const chained = saveChainRef.current.then(runSave, runSave);
+    saveChainRef.current = chained;
+    return chained;
+  }, [runSave]);
 
   const handleBlur = () => {
     void saveProfile();
@@ -289,13 +292,15 @@ export function RegistrationForm({
     router.refresh();
   };
 
-  const removeGuest = async (index: number) => {
+  const removeGuest = (index: number) => {
     const guest = linkedGuests[index];
-    if (guest.id) {
+    setLinkedGuests((prev) => prev.filter((_, i) => i !== index));
+    // Queue behind in-flight saves so a pending upsert can't resurrect the row.
+    const run = async () => {
       const supabase = createClient();
       await supabase.from("linked_guests").delete().eq("id", guest.id);
-    }
-    setLinkedGuests((prev) => prev.filter((_, i) => i !== index));
+    };
+    saveChainRef.current = saveChainRef.current.then(run, run);
   };
 
   if (justCompleted && !isAdminEdit) {
@@ -446,7 +451,7 @@ export function RegistrationForm({
               <div className="mt-4 space-y-3">
                 {linkedGuests.map((guest, index) => (
                   <div
-                    key={guest.id || index}
+                    key={guest.id}
                     className="flex gap-3 rounded-md bg-white p-4 shadow-soft"
                   >
                     <div className="flex-1 space-y-2">
@@ -481,7 +486,10 @@ export function RegistrationForm({
                   type="button"
                   variant="ghost"
                   onClick={() =>
-                    setLinkedGuests([...linkedGuests, { name: "" }])
+                    setLinkedGuests([
+                      ...linkedGuests,
+                      { id: crypto.randomUUID(), name: "" },
+                    ])
                   }
                 >
                   <Plus size={18} /> Add someone
