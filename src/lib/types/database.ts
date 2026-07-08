@@ -182,6 +182,14 @@ export type CampMapContent = {
   caption?: string;
 };
 
+/** Unclaimed linked guest as shown in the directory, with parent's name attached */
+export type LinkedGuestPublic = Pick<
+  LinkedGuest,
+  "id" | "name" | "photo_url" | "bio" | "parent_profile_id"
+> & {
+  parent_name: string;
+};
+
 export type ProfilePublic = Pick<
   Profile,
   | "id"
