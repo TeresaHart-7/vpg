@@ -7,13 +7,13 @@ import { getPageContent } from "@/lib/content";
 import {
   CalendarBlank,
   MapTrifold,
-  Handshake,
+  Sparkle,
 } from "@phosphor-icons/react/dist/ssr";
 
 const ICONS = {
   Schedule: CalendarBlank,
+  Sessions: Sparkle,
   Map: MapTrifold,
-  Agreements: Handshake,
 } as const;
 
 export default async function EventHubPage() {

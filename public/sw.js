@@ -2,9 +2,10 @@ const CACHE = "vpg-event-v1";
 const OFFLINE_URLS = [
   "/event",
   "/event/schedule",
+  "/event/sessions",
   "/event/map",
   "/event/agreements",
-  "/event/announcements",
+  "/messages/announcements",
   "/camp-map.svg",
   "/manifest.json",
 ];

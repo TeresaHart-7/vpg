@@ -4,22 +4,28 @@ import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { setConnectionStrength, buildConnectionMap } from "@/lib/connections";
-import type { ProfilePublic } from "@/lib/types/database";
+import type { LinkedGuestPublic, ProfilePublic } from "@/lib/types/database";
 import type { PageContent } from "@/lib/content";
-import { ParticipantCard } from "@/components/directory/ParticipantCard";
+import { ParticipantCard, GuestCard } from "@/components/directory/ParticipantCard";
 import { ConnectionCelebration } from "@/components/directory/ConnectionCelebration";
 import { Input } from "@/components/ui/Input";
 
 type Props = {
   profiles: ProfilePublic[];
+  linkedGuests: LinkedGuestPublic[];
   myProfileId: string;
   userId: string;
   initialConnections: { profile_id_b: string; strength: number }[];
   pageCopy: PageContent;
 };
 
+type Entry =
+  | { kind: "profile"; profile: ProfilePublic }
+  | { kind: "guest"; guest: LinkedGuestPublic };
+
 export function DirectoryList({
   profiles,
+  linkedGuests,
   myProfileId,
   userId,
   initialConnections,
@@ -34,14 +40,33 @@ export function DirectoryList({
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return profiles;
-    return profiles.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.location_from?.toLowerCase().includes(q) ||
-        p.bio?.toLowerCase().includes(q)
-    );
-  }, [profiles, search]);
+    const matchedProfiles = q
+      ? profiles.filter(
+          (p) =>
+            p.name.toLowerCase().includes(q) ||
+            p.location_from?.toLowerCase().includes(q) ||
+            p.bio?.toLowerCase().includes(q)
+        )
+      : profiles;
+    const matchedGuests = q
+      ? linkedGuests.filter(
+          (g) =>
+            g.name.toLowerCase().includes(q) ||
+            g.bio?.toLowerCase().includes(q) ||
+            g.parent_name.toLowerCase().includes(q)
+        )
+      : linkedGuests;
+
+    const entries: Entry[] = [
+      ...matchedProfiles.map((profile) => ({ kind: "profile" as const, profile })),
+      ...matchedGuests.map((guest) => ({ kind: "guest" as const, guest })),
+    ];
+    return entries.sort((a, b) => {
+      const nameA = a.kind === "profile" ? a.profile.name : a.guest.name;
+      const nameB = b.kind === "profile" ? b.profile.name : b.guest.name;
+      return nameA.localeCompare(nameB);
+    });
+  }, [profiles, linkedGuests, search]);
 
   const handleConnectionSave = useCallback(
     async (theirProfileId: string, strength: number) => {
@@ -91,25 +116,31 @@ export function DirectoryList({
         {filtered.length} {filtered.length === 1 ? "person" : "people"}
       </p>
       <ul className="grid gap-4 sm:grid-cols-2">
-        {filtered.map((profile) => (
-          <li key={profile.id}>
-            <ParticipantCard
-              profile={profile}
-              href={`/directory/${profile.id}`}
-              connectionStrength={connectionMap.get(profile.id) ?? 0}
-              onConnectionSave={
-                profile.id === myProfileId
-                  ? undefined
-                  : async (strength) => {
-                      await handleConnectionSave(profile.id, strength);
-                    }
-              }
-              onConnectionCelebration={() => setCelebrate(true)}
-              connectionIntro={pageCopy.connectionModalIntro as string}
-              connectionLevels={connectionLevels}
-            />
-          </li>
-        ))}
+        {filtered.map((entry) =>
+          entry.kind === "profile" ? (
+            <li key={entry.profile.id}>
+              <ParticipantCard
+                profile={entry.profile}
+                href={`/directory/${entry.profile.id}`}
+                connectionStrength={connectionMap.get(entry.profile.id) ?? 0}
+                onConnectionSave={
+                  entry.profile.id === myProfileId
+                    ? undefined
+                    : async (strength) => {
+                        await handleConnectionSave(entry.profile.id, strength);
+                      }
+                }
+                onConnectionCelebration={() => setCelebrate(true)}
+                connectionIntro={pageCopy.connectionModalIntro as string}
+                connectionLevels={connectionLevels}
+              />
+            </li>
+          ) : (
+            <li key={`guest-${entry.guest.id}`}>
+              <GuestCard guest={entry.guest} />
+            </li>
+          )
+        )}
       </ul>
       {filtered.length === 0 && (
         <p className="text-body-md text-ink-600">No matches for your search.</p>

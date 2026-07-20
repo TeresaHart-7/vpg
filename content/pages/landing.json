@@ -2,7 +2,7 @@
   "hero": {
     "eyebrow": "Sept 25–29, 2026 · Camp Ki-Wa-Y",
     "title": "Welcome to the Village Playground",
-    "subtitle": "This is for the Village Playground gathering — a 4–5 day exploration of villaging: cultivating interdependent, high-trust relationships of mutual support and thrival.",
+    "subtitle": "This is for the Village Playground gathering — a 5 day exploration of villaging: cultivating interdependent, high-trust relationships of mutual support and thrival.",
     "primaryCta": "Register now →",
     "secondaryCta": "About villaging"
   },
@@ -10,12 +10,6 @@
     "title": "About villaging",
     "fallback": "The Village Playground is a gathering for people exploring villaging — cultivating interdependent, high-trust relationships of mutual support and thrival. ~70+ attendees including families and children, hosted by the Village Network Playground crew."
   },
-  "principles": [
-    { "title": "Relationship first", "body": "We show up for each other, not just the program.", "tint": "sage", "icon": "Heart" },
-    { "title": "Co-creation", "body": "The gathering emerges from everyone's gifts and questions.", "tint": "peach", "icon": "Sparkle" },
-    { "title": "Care for the whole", "body": "Children, elders, and newcomers are part of the village.", "tint": "teal", "icon": "UsersThree" },
-    { "title": "Honest presence", "body": "We practice showing up as we are.", "tint": "lavender", "icon": "HandHeart" }
-  ],
   "cta": {
     "title": "Ready to join us?",
     "subtitle": "Registration takes about 15 minutes. Only your name and email are required — everything else is optional and editable anytime.",

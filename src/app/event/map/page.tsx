@@ -9,12 +9,12 @@ export default async function EventMapPage() {
   await requireAuth();
   const page = getPageContent("event-map");
   const raw = await getContentBlock("camp_map");
-  const map = parseCampMap(raw) ?? { imageUrl: "/camp-map.svg" };
+  const map = parseCampMap(raw) ?? { imageUrl: "/images/site-map.png" };
 
   return (
     <div className="min-h-screen bg-cream-50 pb-24 md:pb-8">
       <AppNav />
-      <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
+      <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
         <h1 className="text-display-lg">{page.title as string}</h1>
         <p className="mt-2 text-body-md text-ink-600">{page.subtitle as string}</p>
         <div className="mt-6">

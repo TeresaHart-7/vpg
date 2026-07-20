@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   House,
   UserCircle,
-  CreditCard,
   ShieldCheck,
   SignOut,
   Tent,
@@ -11,7 +10,6 @@ import {
   EnvelopeSimple,
 } from "@phosphor-icons/react/dist/ssr";
 import { getCurrentProfile, getCurrentUser, getUnreadAnnouncementCount, getUnreadMessageCount } from "@/lib/auth/helpers";
-import { NotificationBell } from "@/components/layout/NotificationBell";
 import { MessagesEnvelope } from "@/components/layout/MessagesEnvelope";
 
 export async function AppNav() {
@@ -27,8 +25,11 @@ export async function AppNav() {
           Village Playground
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
-          <NavLink href="/dashboard" icon={<House size={18} />}>
+          <NavLink href="/" icon={<House size={18} />}>
             Home
+          </NavLink>
+          <NavLink href="/register" icon={<UserCircle size={18} />}>
+            Registration
           </NavLink>
           <NavLink href="/directory" icon={<Users size={18} />}>
             Participants
@@ -39,12 +40,6 @@ export async function AppNav() {
           <NavLink href="/event" icon={<Tent size={18} />}>
             At camp
           </NavLink>
-          <NavLink href="/register" icon={<UserCircle size={18} />}>
-            Registration
-          </NavLink>
-          <NavLink href="/payment" icon={<CreditCard size={18} />}>
-            Payment
-          </NavLink>
           {profile?.is_admin && (
             <NavLink href="/admin" icon={<ShieldCheck size={18} />}>
               Admin
@@ -53,9 +48,12 @@ export async function AppNav() {
         </nav>
         <div className="flex items-center gap-2">
           {user && (
-            <MessagesEnvelope userId={user.id} initialUnreadCount={unreadMessages} />
+            <MessagesEnvelope
+              userId={user.id}
+              initialUnreadCount={unreadMessages}
+              initialAnnouncementUnread={unreadAnnouncements}
+            />
           )}
-          {profile && <NotificationBell initialCount={unreadAnnouncements} />}
           <span className="hidden text-body-sm text-ink-600 sm:inline">
             {profile?.name || "Guest"}
           </span>
@@ -71,12 +69,12 @@ export async function AppNav() {
         </div>
       </div>
       <nav className="fixed bottom-0 left-0 right-0 z-40 flex justify-around rounded-t-xl border-t border-lavender-100 bg-white px-2 py-2 shadow-modal md:hidden">
-        <MobileNavLink href="/dashboard" icon={<House size={22} />} label="Home" />
+        <MobileNavLink href="/" icon={<House size={22} />} label="Home" />
+        <MobileNavLink href="/register" icon={<UserCircle size={22} />} label="Register" />
         <MobileNavLink href="/directory" icon={<Users size={22} />} label="People" />
         <MobileNavLink href="/messages" icon={<EnvelopeSimple size={22} />} label="Messages" />
         <MobileNavLink href="/logistics" icon={<Car size={22} />} label="Logistics" />
         <MobileNavLink href="/event" icon={<Tent size={22} />} label="Camp" />
-        <MobileNavLink href="/register" icon={<UserCircle size={22} />} label="Register" />
         {profile?.is_admin && (
           <MobileNavLink href="/admin" icon={<ShieldCheck size={22} />} label="Admin" />
         )}

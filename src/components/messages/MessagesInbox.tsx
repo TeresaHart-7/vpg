@@ -38,12 +38,12 @@ export function MessagesInbox({ threads, userId, pageCopy }: Props) {
     <div className="space-y-8">
       <section>
         <div className="mb-4 flex flex-wrap gap-3">
-          <Link href="/event/chat/new?type=topic">
+          <Link href="/messages/chat/new?type=topic">
             <Button variant="secondary" size="sm">
               {pageCopy.newTopic as string}
             </Button>
           </Link>
-          <Link href="/event/chat/new?type=dm">
+          <Link href="/messages/chat/new?type=dm">
             <Button variant="secondary" size="sm">
               {pageCopy.newDm as string}
             </Button>
@@ -60,7 +60,7 @@ export function MessagesInbox({ threads, userId, pageCopy }: Props) {
                   tint={thread.unread ? "lavender" : "white"}
                   className="relative transition-transform hover:-translate-y-0.5"
                 >
-                  <Link href={`/event/chat/${thread.id}`} className="block">
+                  <Link href={`/messages/chat/${thread.id}`} className="block">
                     <div className="flex items-start gap-3">
                       {thread.unread && (
                         <span className="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-error" />
@@ -109,7 +109,7 @@ export function MessagesInbox({ threads, userId, pageCopy }: Props) {
           ) : (
             announcements.map((thread) => (
               <li key={thread.id}>
-                <Link href="/event/announcements">
+                <Link href="/messages/announcements">
                   <Card tint="peach" className="transition-transform hover:-translate-y-0.5">
                     <h3 className="text-body-md font-semibold text-ink-900">
                       {thread.title || "Announcements"}

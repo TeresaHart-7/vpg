@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { postAnnouncement, formatMessageTime } from "@/lib/chat";
+import { postAnnouncement } from "@/lib/chat";
+import { EditableMessage } from "@/components/messages/EditableMessage";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
 import { Card } from "@/components/ui/Card";
@@ -17,16 +18,21 @@ type Props = {
 };
 
 export function AnnouncementFeed({
-  messages,
+  messages: initialMessages,
   threadId: initialThreadId,
   isAdmin,
   userId,
 }: Props) {
   const router = useRouter();
   const [threadId, setThreadId] = useState(initialThreadId);
+  const [messages, setMessages] = useState(initialMessages);
   const [body, setBody] = useState("");
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMessages(initialMessages);
+  }, [initialMessages]);
 
   async function handlePost(e: React.FormEvent) {
     e.preventDefault();
@@ -78,12 +84,17 @@ export function AnnouncementFeed({
         ) : (
           messages.map((msg) => (
             <Card key={msg.id} tint="peach" className="animate-in fade-in">
-              <p className="whitespace-pre-wrap text-body-md text-ink-900">
-                {msg.body}
-              </p>
-              <p className="mt-3 text-body-sm text-ink-600">
-                {msg.sender_name} · {formatMessageTime(msg.created_at)}
-              </p>
+              <EditableMessage
+                message={msg}
+                userId={userId}
+                isOwn={msg.sender_id === userId}
+                align="start"
+                onUpdated={(updated) =>
+                  setMessages((prev) =>
+                    prev.map((m) => (m.id === updated.id ? updated : m))
+                  )
+                }
+              />
             </Card>
           ))
         )}

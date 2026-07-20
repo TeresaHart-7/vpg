@@ -118,6 +118,6 @@ export type LogisticsCategoryId = (typeof LOGISTICS_CATEGORIES)[number]["id"];
 
 export const EVENT_SECTIONS = [
   { href: "/event/schedule", label: "Schedule", description: "Daily program" },
+  { href: "/event/sessions", label: "Sessions", description: "Propose & vote on activities" },
   { href: "/event/map", label: "Map", description: "Camp layout" },
-  { href: "/event/agreements", label: "Agreements", description: "Camp norms" },
 ] as const;

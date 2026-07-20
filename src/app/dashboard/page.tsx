@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { AppNav } from "@/components/layout/AppNav";
+import { PaymentStatusCard } from "@/components/dashboard/PaymentStatusCard";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ComingBadge } from "@/components/ui/StatusBadge";
 import { requireAuth, getCurrentProfile } from "@/lib/auth/helpers";
-import { getPageContent } from "@/lib/content";
+import { getPageContent, getRegistrationCopy } from "@/lib/content";
 import { createClient } from "@/lib/supabase/server";
 
 type DashboardCard = {
@@ -28,6 +29,7 @@ export default async function DashboardPage() {
   await requireAuth();
   const profile = await getCurrentProfile();
   const copy = getPageContent("dashboard");
+  const registrationCopy = getRegistrationCopy();
   const cards = (copy.cards as DashboardCard[]) || [];
   const supabase = await createClient();
 
@@ -50,6 +52,11 @@ export default async function DashboardPage() {
         <p className="mt-2 text-body-md text-ink-600">{copy.subtitle as string}</p>
 
         <div className="mt-8 space-y-4">
+          <PaymentStatusCard
+            profile={profile!}
+            sentCheckboxLabel={registrationCopy.payments.sentCheckbox}
+            aug31CheckboxLabel={registrationCopy.payments.aug31Checkbox}
+          />
           {cards.map((card) => {
             if (card.adminOnly && !profile?.is_admin) return null;
             if (card.dynamic === "guestCount" && (!guestCount || guestCount === 0)) return null;

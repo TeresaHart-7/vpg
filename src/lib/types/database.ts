@@ -101,6 +101,38 @@ export type LogisticsReplyWithAuthor = LogisticsReply & {
   profiles: Pick<Profile, "id" | "name" | "photo_url">;
 };
 
+export type CampSession = {
+  id: string;
+  profile_id: string;
+  title: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CampSessionVote = {
+  id: string;
+  session_id: string;
+  profile_id: string;
+  created_at: string;
+};
+
+export type CampSessionReply = {
+  id: string;
+  session_id: string;
+  profile_id: string;
+  body: string;
+  created_at: string;
+};
+
+export type CampSessionWithDetails = CampSession & {
+  profiles: Pick<Profile, "id" | "name" | "photo_url">;
+  camp_session_votes: CampSessionVote[];
+  camp_session_replies: (CampSessionReply & {
+    profiles: Pick<Profile, "id" | "name" | "photo_url">;
+  })[];
+};
+
 export type ThreadType = "dm" | "announcement" | "topic_chat";
 
 export type Thread = {
@@ -119,6 +151,8 @@ export type Message = {
   sender_id: string;
   body: string;
   created_at: string;
+  edited_at?: string | null;
+  deleted_at?: string | null;
 };
 
 export type MessageWithSender = Message & {
@@ -146,6 +180,14 @@ export type EventSchedule = {
 export type CampMapContent = {
   imageUrl: string;
   caption?: string;
+};
+
+/** Unclaimed linked guest as shown in the directory, with parent's name attached */
+export type LinkedGuestPublic = Pick<
+  LinkedGuest,
+  "id" | "name" | "photo_url" | "bio" | "parent_profile_id"
+> & {
+  parent_name: string;
 };
 
 export type ProfilePublic = Pick<

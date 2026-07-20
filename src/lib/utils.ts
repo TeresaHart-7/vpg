@@ -3,9 +3,18 @@ export function cn(...inputs: (string | undefined | null | false)[]) {
 }
 
 function linkify(text: string): string {
-  return text.replace(
-    /(https?:\/\/[^\s<]+|paypal\.me\/[^\s<]+|@[\w-]+)/g,
-    (match) => {
+  const withMarkdownLinks = text.replace(
+    /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+    (_, label, url) =>
+      `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-plum-500 underline hover:text-plum-700">${label}</a>`
+  );
+
+  return withMarkdownLinks.replace(
+    /(?:https?:\/\/[^\s<"]+|paypal\.me\/[^\s<"]+|(?<![\w.])@[\w-]+)/g,
+    (match, offset, full) => {
+      const before = full.slice(0, offset);
+      if (before.lastIndexOf("<") > before.lastIndexOf(">")) return match;
+
       const href = match.startsWith("@")
         ? `https://venmo.com/${match.slice(1)}`
         : match.startsWith("http")

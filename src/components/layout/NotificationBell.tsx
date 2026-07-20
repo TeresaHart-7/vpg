@@ -12,8 +12,9 @@ type Props = {
 
 function notificationHref(n: AppNotification) {
   const payload = n.payload;
-  if (n.type === "announcement") return "/event/announcements";
-  if (payload.thread_id) return `/event/chat/${payload.thread_id}`;
+  if (n.type === "announcement") return "/messages/announcements";
+  if (payload.thread_id) return `/messages/chat/${payload.thread_id}`;
+  if (payload.session_id) return `/event/sessions?session=${payload.session_id}`;
   if (payload.submission_id) return `/logistics?submission=${payload.submission_id}`;
   if (payload.category) return "/logistics";
   return "/dashboard";

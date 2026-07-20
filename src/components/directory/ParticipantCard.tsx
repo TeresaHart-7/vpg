@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import type { ProfilePublic } from "@/lib/types/database";
+import type { LinkedGuestPublic, ProfilePublic } from "@/lib/types/database";
 import { ComingBadge } from "@/components/ui/StatusBadge";
 import { ConnectionStrength } from "@/components/ui/ConnectionStrength";
 import { ConnectionModal } from "@/components/directory/ConnectionModal";
@@ -20,7 +20,13 @@ type ParticipantCardProps = {
   compact?: boolean;
 };
 
-function Avatar({ profile, size }: { profile: ProfilePublic; size: "sm" | "md" }) {
+function Avatar({
+  profile,
+  size,
+}: {
+  profile: Pick<ProfilePublic, "name" | "photo_url">;
+  size: "sm" | "md";
+}) {
   const dim = size === "sm" ? 40 : 56;
   const initials = profile.name
     .split(" ")
@@ -132,6 +138,32 @@ export function ParticipantCard({
           />
         </div>
       )}
+    </div>
+  );
+}
+
+export function GuestCard({ guest }: { guest: LinkedGuestPublic }) {
+  return (
+    <div className="rounded-lg bg-white p-4 shadow-soft">
+      <div className="flex gap-4">
+        <Avatar profile={guest} size="md" />
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="truncate text-display-sm">{guest.name}</h3>
+            <span className="inline-flex rounded-pill bg-cream-100 px-3 py-1 text-label text-ink-600">
+              Guest
+            </span>
+          </div>
+          {guest.parent_name && (
+            <p className="mt-0.5 truncate text-body-sm text-ink-600">
+              Coming with {guest.parent_name}
+            </p>
+          )}
+          {guest.bio && (
+            <p className="mt-2 line-clamp-2 text-body-sm text-ink-600">{guest.bio}</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

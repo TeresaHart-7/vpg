@@ -6,12 +6,13 @@ import { cn } from "@/lib/utils";
 import { DirectoryList } from "@/components/directory/DirectoryList";
 import { NetworkMap } from "@/components/directory/NetworkMap";
 import type { PageContent } from "@/lib/content";
-import type { ProfilePublic } from "@/lib/types/database";
+import type { LinkedGuestPublic, ProfilePublic } from "@/lib/types/database";
 
 type View = "list" | "map";
 
 type Props = {
   profiles: ProfilePublic[];
+  linkedGuests: LinkedGuestPublic[];
   mapProfiles: ProfilePublic[];
   myProfileId: string;
   userId: string;
@@ -23,6 +24,7 @@ type Props = {
 
 export function DirectoryView({
   profiles,
+  linkedGuests,
   mapProfiles,
   myProfileId,
   userId,
@@ -57,6 +59,7 @@ export function DirectoryView({
       {view === "list" ? (
         <DirectoryList
           profiles={profiles}
+          linkedGuests={linkedGuests}
           myProfileId={myProfileId}
           userId={userId}
           initialConnections={initialConnections}
