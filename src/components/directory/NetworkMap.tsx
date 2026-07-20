@@ -1,99 +1,51 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { ProfilePublic } from "@/lib/types/database";
+import { NETWORK_STRENGTH_STYLE } from "@/components/directory/networkMapStyles";
 
-type GraphNode = ProfilePublic & { x?: number; y?: number };
-type GraphLink = { source: string; target: string; strength: number };
-
-type ForceGraphProps = {
-  graphData: { nodes: GraphNode[]; links: GraphLink[] };
-  onNodeClick: (node: GraphNode) => void;
-};
-
-const ForceGraph2D = dynamic(
-  () => import("react-force-graph-2d").then((mod) => mod.default),
-  { ssr: false }
-) as React.ComponentType<
-  ForceGraphProps & {
-    width?: number;
-    height?: number;
-    nodeRelSize?: number;
-    linkWidth?: (link: GraphLink) => number;
-    linkColor?: (link: GraphLink) => string;
-    nodeCanvasObject?: (
-      node: GraphNode,
-      ctx: CanvasRenderingContext2D,
-      globalScale: number
-    ) => void;
-    nodePointerAreaPaint?: (
-      node: GraphNode,
-      color: string,
-      ctx: CanvasRenderingContext2D
-    ) => void;
-    cooldownTicks?: number;
-    onEngineStop?: () => void;
+const NetworkMapCanvas = dynamic(
+  () => import("@/components/directory/NetworkMapCanvas"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[480px] items-center justify-center text-body-sm text-ink-600">
+        Gathering the village…
+      </div>
+    ),
   }
->;
+);
 
 type Props = {
   profiles: ProfilePublic[];
-  links: GraphLink[];
+  links: { source: string; target: string; strength: number }[];
   onSelectProfile: (id: string) => void;
+  currentProfileId?: string;
 };
 
-const STRENGTH_COLORS = ["", "#E6E1F2", "#B8A9D9", "#8B7BA8", "#5B4A7A"];
-
-function drawNode(
-  node: GraphNode,
-  ctx: CanvasRenderingContext2D,
-  globalScale: number
-) {
-  const size = 14;
-  const label = node.name?.split(" ")[0] || "?";
-
-  ctx.beginPath();
-  ctx.arc(node.x ?? 0, node.y ?? 0, size, 0, 2 * Math.PI);
-  ctx.fillStyle = node.is_coming === "yes" ? "#B7CFA0" : "#E6E1F2";
-  ctx.fill();
-  ctx.strokeStyle = "#8B7BA8";
-  ctx.lineWidth = 1.5 / globalScale;
-  ctx.stroke();
-
-  ctx.font = `${10 / globalScale}px sans-serif`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "top";
-  ctx.fillStyle = "#3A3530";
-  ctx.fillText(label, node.x ?? 0, (node.y ?? 0) + size + 2 / globalScale);
-}
-
-export function NetworkMap({ profiles, links, onSelectProfile }: Props) {
+export function NetworkMap({
+  profiles,
+  links,
+  onSelectProfile,
+  currentProfileId,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 600, height: 480 });
+  const [dimensions, setDimensions] = useState({ width: 640, height: 560 });
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const ro = new ResizeObserver(([entry]) => {
       const { width } = entry.contentRect;
-      setDimensions({ width: Math.max(320, width), height: Math.min(520, width * 0.75) });
+      setDimensions({
+        width: Math.max(320, width),
+        height: Math.max(480, Math.min(640, width * 0.85)),
+      });
     });
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-
-  const graphData = useMemo(
-    () => ({ nodes: profiles as GraphNode[], links }),
-    [profiles, links]
-  );
-
-  const handleNodeClick = useCallback(
-    (node: GraphNode) => {
-      onSelectProfile(node.id);
-    },
-    [onSelectProfile]
-  );
 
   if (profiles.length === 0) {
     return (
@@ -106,28 +58,45 @@ export function NetworkMap({ profiles, links, onSelectProfile }: Props) {
   return (
     <div
       ref={containerRef}
-      className="overflow-hidden rounded-lg border border-lavender-100 bg-cream-50"
+      className="relative overflow-hidden rounded-xl border border-lavender-100"
+      style={{
+        background:
+          "radial-gradient(ellipse at 30% 20%, #F4F1FA 0%, transparent 55%), radial-gradient(ellipse at 80% 90%, #E8F0E0 0%, transparent 50%), #FBF8F3",
+      }}
     >
-      <ForceGraph2D
+      <NetworkMapCanvas
+        profiles={profiles}
+        links={links}
+        onSelectProfile={onSelectProfile}
+        currentProfileId={currentProfileId}
         width={dimensions.width}
         height={dimensions.height}
-        graphData={graphData}
-        nodeRelSize={6}
-        linkWidth={(link) => 0.5 + link.strength * 0.75}
-        linkColor={(link) => STRENGTH_COLORS[link.strength] || "#E6E1F2"}
-        nodeCanvasObject={drawNode}
-        nodePointerAreaPaint={(node, color, ctx) => {
-          const size = 14;
-          ctx.beginPath();
-          ctx.arc(node.x ?? 0, node.y ?? 0, size + 4, 0, 2 * Math.PI);
-          ctx.fillStyle = color;
-          ctx.fill();
-        }}
-        onNodeClick={handleNodeClick}
-        cooldownTicks={80}
       />
-      <p className="border-t border-lavender-100 px-4 py-3 text-body-sm text-ink-600">
-        Tap a person to view their profile. Line thickness reflects connection strength.
+
+      <div className="pointer-events-none absolute bottom-14 left-4 rounded-lg bg-cream-50/90 px-3 py-2.5 shadow-sm backdrop-blur-sm">
+        <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-600">
+          Connection strength
+        </p>
+        <ul className="space-y-1.5">
+          {([1, 2, 3, 4] as const).map((level) => (
+            <li key={level} className="flex items-center gap-2">
+              <span
+                className="block rounded-full"
+                style={{
+                  width: 28 + level * 4,
+                  height: NETWORK_STRENGTH_STYLE[level].width,
+                  backgroundColor: NETWORK_STRENGTH_STYLE[level].legend,
+                  opacity: 0.45 + level * 0.13,
+                }}
+              />
+              <span className="text-[11px] text-ink-600">{level}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p className="border-t border-lavender-100/80 bg-cream-50/70 px-4 py-3 text-body-sm text-ink-600 backdrop-blur-sm">
+        Tap a person to view their profile. Curves thicken with stronger connections.
       </p>
     </div>
   );

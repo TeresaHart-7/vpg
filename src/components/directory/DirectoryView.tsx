@@ -66,6 +66,7 @@ export function DirectoryView({
         <NetworkMap
           profiles={mapProfiles}
           links={graphLinks}
+          currentProfileId={myProfileId}
           onSelectProfile={(id) => router.push(`/directory/${id}`)}
         />
       )}
