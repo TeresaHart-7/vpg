@@ -1,9 +1,10 @@
 {
   "title": "At camp",
-  "subtitle": "Schedule and map — lightweight for spotty cell service.",
+  "subtitle": "Schedule, sessions, recordings, and map — lightweight for spotty cell service.",
   "sections": [
     { "label": "Schedule", "description": "Daily program", "href": "/event/schedule" },
     { "label": "Sessions", "description": "Propose & vote on activities", "href": "/event/sessions" },
+    { "label": "Recordings", "description": "Audio & reflections from the village", "href": "/recordings" },
     { "label": "Map", "description": "Camp layout", "href": "/event/map" }
   ]
 }

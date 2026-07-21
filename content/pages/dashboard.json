@@ -30,6 +30,14 @@
       "tint": "lavender"
     },
     {
+      "id": "recordings",
+      "title": "Recordings",
+      "description": "Listen to voice memos and leave timed reflections.",
+      "button": "Browse recordings",
+      "href": "/recordings",
+      "tint": "peach"
+    },
+    {
       "id": "participants",
       "title": "Participants & network",
       "description": "Browse who's coming and map your connections in the village.",
