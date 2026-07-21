@@ -79,11 +79,11 @@ function prefersReducedMotion() {
 
 function useImageCache(urls: string[]) {
   const [images, setImages] = useState<Map<string, HTMLImageElement>>(() => new Map());
-  const urlsKey = urls.slice().sort().join("|");
+  const urlsKey = useMemo(() => [...new Set(urls.filter(Boolean))].sort().join("|"), [urls]);
 
   useEffect(() => {
     let cancelled = false;
-    const unique = [...new Set(urls.filter(Boolean))];
+    const unique = urlsKey ? urlsKey.split("|") : [];
 
     unique.forEach((url) => {
       const img = new Image();
