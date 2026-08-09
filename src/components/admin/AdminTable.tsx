@@ -18,11 +18,11 @@ type AdminRow = Profile & {
 const ALL_COLUMNS = [
   { key: "name", label: "Name" },
   { key: "email", label: "Email" },
+  { key: "is_coming", label: "Are you coming?" },
   { key: "dates", label: "Coming dates" },
   { key: "paid", label: "Paid" },
   { key: "bio", label: "Bio added" },
   { key: "linked_guests", label: "Linked guests" },
-  { key: "is_coming", label: "Coming?" },
   { key: "location_from", label: "Location" },
   { key: "dietary_restrictions", label: "Dietary" },
 ] as const;
@@ -32,6 +32,7 @@ type ColumnKey = (typeof ALL_COLUMNS)[number]["key"];
 const DEFAULT_VISIBLE: ColumnKey[] = [
   "name",
   "email",
+  "is_coming",
   "dates",
   "paid",
   "bio",
