@@ -150,6 +150,7 @@ export function GuestCard({ guest }: { guest: LinkedGuestPublic }) {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="truncate text-display-sm">{guest.name}</h3>
+            <ComingBadge isComing={guest.parent_is_coming} />
             <span className="inline-flex rounded-pill bg-cream-100 px-3 py-1 text-label text-ink-600">
               Guest
             </span>

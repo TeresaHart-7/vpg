@@ -229,6 +229,8 @@ export type LinkedGuestPublic = Pick<
   "id" | "name" | "photo_url" | "bio" | "parent_profile_id"
 > & {
   parent_name: string;
+  /** Guests inherit RSVP from their parent */
+  parent_is_coming: ComingStatus | null;
 };
 
 export type ProfilePublic = Pick<

@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { CaretDown } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import { setConnectionStrength, buildConnectionMap } from "@/lib/connections";
 import {
@@ -61,19 +62,14 @@ export function DirectoryList({
 
   const interestFiltersActive =
     coThinkingFilters.length > 0 || opsFilters.length > 0;
-  const structuredFiltersActive =
-    comingFilter !== null || interestFiltersActive;
+  const filtersActive = comingFilter !== null || interestFiltersActive;
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
 
     const matchedProfiles = profiles.filter((p) => {
       if (q) {
-        const hay = [
-          p.name,
-          p.location_from ?? "",
-          p.bio ?? "",
-        ]
+        const hay = [p.name, p.location_from ?? "", p.bio ?? ""]
           .join(" ")
           .toLowerCase();
         if (!hay.includes(q)) return false;
@@ -94,17 +90,21 @@ export function DirectoryList({
       return true;
     });
 
-    const matchedGuests =
-      structuredFiltersActive
-        ? []
-        : q
-          ? linkedGuests.filter(
-              (g) =>
-                g.name.toLowerCase().includes(q) ||
-                g.bio?.toLowerCase().includes(q) ||
-                g.parent_name.toLowerCase().includes(q)
-            )
-          : linkedGuests;
+    // Guests inherit RSVP from their parent. They have no interest tags, so
+    // hide them when co-thinking / ops filters are active.
+    const matchedGuests = interestFiltersActive
+      ? []
+      : linkedGuests.filter((g) => {
+          if (comingFilter !== null && g.parent_is_coming !== comingFilter) {
+            return false;
+          }
+          if (!q) return true;
+          return (
+            g.name.toLowerCase().includes(q) ||
+            g.bio?.toLowerCase().includes(q) ||
+            g.parent_name.toLowerCase().includes(q)
+          );
+        });
 
     const entries: Entry[] = [
       ...matchedProfiles.map((profile) => ({
@@ -125,13 +125,16 @@ export function DirectoryList({
     comingFilter,
     coThinkingFilters,
     opsFilters,
-    structuredFiltersActive,
+    interestFiltersActive,
   ]);
 
   const filteredEmails = useMemo(
     () =>
       filtered
-        .filter((e): e is { kind: "profile"; profile: DirectoryProfile } => e.kind === "profile")
+        .filter(
+          (e): e is { kind: "profile"; profile: DirectoryProfile } =>
+            e.kind === "profile"
+        )
         .map((e) => e.profile.email)
         .filter(Boolean),
     [filtered]
@@ -188,73 +191,86 @@ export function DirectoryList({
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      <div className="space-y-5">
-        <div>
-          <p className="text-label mb-2 text-ink-600">Coming</p>
-          <div className="flex flex-wrap gap-2">
-            <SelectionPill
-              selected={comingFilter === null}
-              onClick={() => setComingFilter(null)}
-            >
-              Any
-            </SelectionPill>
-            {COMING_OPTIONS.map((opt) => (
+      <details className="group rounded-md border border-lavender-100 bg-white/60 open:bg-white">
+        <summary className="flex cursor-pointer list-none items-center gap-1.5 px-3 py-2 text-body-sm text-ink-600 marker:content-none [&::-webkit-details-marker]:hidden hover:text-plum-500">
+          <CaretDown
+            size={14}
+            weight="bold"
+            className="shrink-0 transition-transform group-open:rotate-180"
+            aria-hidden
+          />
+          <span>Filter by</span>
+          {filtersActive && (
+            <span className="text-label text-plum-500">· active</span>
+          )}
+        </summary>
+        <div className="space-y-5 border-t border-lavender-100 px-3 py-4">
+          <div>
+            <p className="text-label mb-2 text-ink-600">RSVP</p>
+            <div className="flex flex-wrap gap-2">
               <SelectionPill
-                key={opt.value}
-                selected={comingFilter === opt.value}
-                onClick={() =>
-                  setComingFilter((prev) =>
-                    prev === opt.value ? null : opt.value
-                  )
-                }
+                selected={comingFilter === null}
+                onClick={() => setComingFilter(null)}
               >
-                {opt.label}
+                Any
               </SelectionPill>
-            ))}
+              {COMING_OPTIONS.map((opt) => (
+                <SelectionPill
+                  key={opt.value}
+                  selected={comingFilter === opt.value}
+                  onClick={() =>
+                    setComingFilter((prev) =>
+                      prev === opt.value ? null : opt.value
+                    )
+                  }
+                >
+                  {opt.label}
+                </SelectionPill>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <p className="text-label mb-2 text-ink-600">Co-thinking interest</p>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {CO_CREATION_DOMAINS.map((domain) => (
-              <Checkbox
-                key={domain.value}
-                label={domain.shortLabel}
-                checked={coThinkingFilters.includes(domain.value)}
-                onChange={() =>
-                  setCoThinkingFilters((prev) =>
-                    toggleInSet(prev, domain.value)
-                  )
-                }
-              />
-            ))}
+          <div>
+            <p className="text-label mb-2 text-ink-600">Co-thinking interest</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {CO_CREATION_DOMAINS.map((domain) => (
+                <Checkbox
+                  key={domain.value}
+                  label={domain.shortLabel}
+                  checked={coThinkingFilters.includes(domain.value)}
+                  onChange={() =>
+                    setCoThinkingFilters((prev) =>
+                      toggleInSet(prev, domain.value)
+                    )
+                  }
+                />
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <p className="text-label mb-2 text-ink-600">Operational support</p>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {OPERATIONAL_SHIFTS.map((shift) => (
-              <Checkbox
-                key={shift.value}
-                label={shift.label}
-                checked={opsFilters.includes(shift.value)}
-                onChange={() =>
-                  setOpsFilters((prev) => toggleInSet(prev, shift.value))
-                }
-              />
-            ))}
+          <div>
+            <p className="text-label mb-2 text-ink-600">Operational support</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {OPERATIONAL_SHIFTS.map((shift) => (
+                <Checkbox
+                  key={shift.value}
+                  label={shift.label}
+                  checked={opsFilters.includes(shift.value)}
+                  onChange={() =>
+                    setOpsFilters((prev) => toggleInSet(prev, shift.value))
+                  }
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="space-y-3">
-        <p className="text-body-sm text-ink-600">
-          {filtered.length} {filtered.length === 1 ? "person" : "people"}
-        </p>
-        <EmailFilteredAttendees emails={filteredEmails} />
-      </div>
+          <EmailFilteredAttendees emails={filteredEmails} />
+        </div>
+      </details>
+
+      <p className="text-body-sm text-ink-600">
+        {filtered.length} {filtered.length === 1 ? "person" : "people"}
+      </p>
 
       <ul className="grid gap-4 sm:grid-cols-2">
         {filtered.map((entry) =>

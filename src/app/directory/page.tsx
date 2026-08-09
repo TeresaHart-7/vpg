@@ -113,6 +113,7 @@ export default async function DirectoryPage() {
         bio: g.bio,
         parent_profile_id: g.parent_profile_id,
         parent_name: parent.name,
+        parent_is_coming: parent.is_coming,
       },
     ];
   });
