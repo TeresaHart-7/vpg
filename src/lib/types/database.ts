@@ -244,6 +244,13 @@ export type ProfilePublic = Pick<
   | "desires_for_gathering"
 >;
 
+/** Directory list profile: public fields plus email + interest tags for filtering/export */
+export type DirectoryProfile = ProfilePublic & {
+  email: string;
+  co_creation_domains: string[];
+  operational_shifts: string[];
+};
+
 /** Fields visible to other participants (not owner/admin) */
 export const PUBLIC_PROFILE_FIELDS = [
   "name",

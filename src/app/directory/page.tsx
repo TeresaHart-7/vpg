@@ -3,7 +3,11 @@ import { DirectoryView } from "@/components/directory/DirectoryView";
 import { requireAuth, getCurrentProfile } from "@/lib/auth/helpers";
 import { createClient } from "@/lib/supabase/server";
 import { getPageContent } from "@/lib/content";
-import type { LinkedGuestPublic, ProfilePublic } from "@/lib/types/database";
+import type {
+  DirectoryProfile,
+  LinkedGuestPublic,
+  ProfilePublic,
+} from "@/lib/types/database";
 
 function buildGraphLinks(
   connections: { profile_id_a: string; profile_id_b: string; strength: number }[]
@@ -34,11 +38,13 @@ export default async function DirectoryPage() {
     { data: guests },
     { data: myConnections },
     { data: allConnections },
+    { data: coCreation },
+    { data: operational },
   ] = await Promise.all([
     supabase
       .from("profiles")
       .select(
-        "id, name, photo_url, bio, is_coming, dates, location_from, what_bringing_to_support, desires_for_gathering"
+        "id, name, email, photo_url, bio, is_coming, dates, location_from, what_bringing_to_support, desires_for_gathering"
       )
       .neq("name", "")
       .order("name"),
@@ -56,12 +62,42 @@ export default async function DirectoryPage() {
       .from("connections")
       .select("profile_id_a, profile_id_b, strength")
       .gt("strength", 0),
+    supabase.from("co_creation_interests").select("profile_id, domain"),
+    supabase.from("operational_shifts").select("profile_id, shift_type"),
   ]);
 
-  const publicProfiles = (profiles || []) as ProfilePublic[];
-  const mapProfiles = publicProfiles.filter(
+  const domainsByProfile = new Map<string, string[]>();
+  for (const row of coCreation || []) {
+    const list = domainsByProfile.get(row.profile_id) ?? [];
+    list.push(row.domain);
+    domainsByProfile.set(row.profile_id, list);
+  }
+
+  const shiftsByProfile = new Map<string, string[]>();
+  for (const row of operational || []) {
+    const list = shiftsByProfile.get(row.profile_id) ?? [];
+    list.push(row.shift_type);
+    shiftsByProfile.set(row.profile_id, list);
+  }
+
+  const directoryProfiles: DirectoryProfile[] = (profiles || []).map((p) => ({
+    id: p.id,
+    name: p.name,
+    email: p.email ?? "",
+    photo_url: p.photo_url,
+    bio: p.bio,
+    is_coming: p.is_coming,
+    dates: p.dates,
+    location_from: p.location_from,
+    what_bringing_to_support: p.what_bringing_to_support,
+    desires_for_gathering: p.desires_for_gathering,
+    co_creation_domains: domainsByProfile.get(p.id) ?? [],
+    operational_shifts: shiftsByProfile.get(p.id) ?? [],
+  }));
+
+  const mapProfiles = directoryProfiles.filter(
     (p) => p.is_coming === "yes" || p.is_coming === "maybe"
-  );
+  ) as ProfilePublic[];
 
   // Guests inherit visibility from their parent: only listed when the parent
   // is in the directory and coming (yes/maybe).
@@ -97,7 +133,7 @@ export default async function DirectoryPage() {
         <p className="mt-2 text-body-md text-ink-600">{pageCopy.subtitle as string}</p>
         <div className="mt-8">
           <DirectoryView
-            profiles={publicProfiles}
+            profiles={directoryProfiles}
             linkedGuests={linkedGuests}
             mapProfiles={mapProfiles}
             myProfileId={myProfile.id}

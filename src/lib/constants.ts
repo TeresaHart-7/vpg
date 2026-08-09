@@ -18,11 +18,13 @@ export const CO_CREATION_DOMAINS = [
   {
     value: "unifying_ground",
     label: "Design of structures and processes to enable bridging of perspectives",
+    shortLabel: "Bridging perspectives",
     icon: "Bridge",
   },
   {
     value: "schedule_design",
     label: "More concretely, what might our schedule and events look like?",
+    shortLabel: "Schedule & events",
     icon: "CalendarBlank",
   },
 ] as const;

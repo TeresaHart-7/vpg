@@ -6,12 +6,16 @@ import { cn } from "@/lib/utils";
 import { DirectoryList } from "@/components/directory/DirectoryList";
 import { NetworkMap } from "@/components/directory/NetworkMap";
 import type { PageContent } from "@/lib/content";
-import type { LinkedGuestPublic, ProfilePublic } from "@/lib/types/database";
+import type {
+  DirectoryProfile,
+  LinkedGuestPublic,
+  ProfilePublic,
+} from "@/lib/types/database";
 
 type View = "list" | "map";
 
 type Props = {
-  profiles: ProfilePublic[];
+  profiles: DirectoryProfile[];
   linkedGuests: LinkedGuestPublic[];
   mapProfiles: ProfilePublic[];
   myProfileId: string;
