@@ -200,7 +200,22 @@ export function DirectoryList({
           />
           <span>Filter by</span>
           {filtersActive && (
-            <span className="text-label text-plum-500">· active</span>
+            <>
+              <span className="text-label text-plum-500">· active</span>
+              <button
+                type="button"
+                className="ml-1 text-label font-semibold text-plum-500 hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setComingFilter(null);
+                  setCoThinkingFilters([]);
+                  setOpsFilters([]);
+                }}
+              >
+                Reset
+              </button>
+            </>
           )}
         </summary>
         <div className="space-y-4 border-t border-lavender-100 px-3 py-4">
