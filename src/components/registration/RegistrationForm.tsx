@@ -73,7 +73,6 @@ function profileToForm(profile: Profile): RegistrationFormData {
     what_bringing_to_support: profile.what_bringing_to_support || "",
     desires_for_gathering: profile.desires_for_gathering || "",
     needs_financial_assistance: profile.needs_financial_assistance || "",
-    has_extra_to_contribute: profile.has_extra_to_contribute || "",
     payment_sent_checkbox: profile.payment_sent_checkbox ?? false,
     will_pay_by_aug31_checkbox: profile.will_pay_by_aug31_checkbox ?? false,
     cabin_or_tent: profile.cabin_or_tent || "",
@@ -147,7 +146,6 @@ export function RegistrationForm({
         what_bringing_to_support: values.what_bringing_to_support || null,
         desires_for_gathering: values.desires_for_gathering || null,
         needs_financial_assistance: values.needs_financial_assistance || null,
-        has_extra_to_contribute: values.has_extra_to_contribute || null,
         payment_sent_checkbox: values.payment_sent_checkbox,
         will_pay_by_aug31_checkbox: values.will_pay_by_aug31_checkbox,
         cabin_or_tent: values.cabin_or_tent || null,
@@ -507,10 +505,7 @@ export function RegistrationForm({
             </div>
 
             <div>
-              <h3 className="text-display-sm mb-1">{copy.coCreate.coThinkingTitle}</h3>
-              <p className="mb-3 text-body-sm italic text-ink-600">
-                {copy.coCreate.coThinkingSubtitle}
-              </p>
+              <h3 className="text-display-sm mb-3">{copy.coCreate.coThinkingTitle}</h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 {copy.coCreationDomains.map((domain) => {
                   const selected = watch("co_creation_domains").includes(domain.value);
@@ -604,13 +599,6 @@ export function RegistrationForm({
               value={watch("needs_financial_assistance") || ""}
               maxLength={500}
               {...register("needs_financial_assistance")}
-            />
-
-            <Textarea
-              label={copy.payments.extraLabel}
-              value={watch("has_extra_to_contribute") || ""}
-              maxLength={500}
-              {...register("has_extra_to_contribute")}
             />
 
             <Checkbox label={copy.payments.sentCheckbox} {...register("payment_sent_checkbox")} />

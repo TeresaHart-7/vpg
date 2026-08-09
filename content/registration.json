@@ -11,9 +11,8 @@
   },
   "coCreate": {
     "title": "Co-create with us",
-    "subtitle": "Let us know how you might imagine yourself helping out around the village. We may follow up to clarify or go deeper.",
+    "subtitle": "Let us know how you might imagine yourself helping out around the village. Indicating your interest is not a commitment to sign up. We'll host co-creation calls before the gathering to explore further.",
     "coThinkingTitle": "Co-thinking around design",
-    "coThinkingSubtitle": "We'll host multiple calls before the gathering to think about design and processes.",
     "operationalTitle": "Operational support"
   },
   "payments": {
@@ -21,8 +20,7 @@
     "intro": "Payments are due by Aug 31. The payments for this gathering go to paying the camp, supplies and buffering financial assistance. With this cost-sharing set up, some participants may pay less and some may pay more. Overall we hope to have our costs fully covered, without collecting surplus.",
     "privacyNote": "Private — only you and the host crew can see this section.",
     "financialLabel": "Would you prefer to pay a different amount based on your current financial situation?",
-    "financialHint": "More, to support others being able to join us, or less, as you need. Consider honouring the value you think you will receive, contributing to the community and what would feel easeful for your financial body.",
-    "extraLabel": "Do you have extra to contribute?",
+    "financialHint": "Contribute more, to support others, or less, as you need. Consider honouring the value you think you will receive, contributing to the community cost of being able to gather like this, and what would feel easeful for your financial body.",
     "sentCheckbox": "I have sent my payment",
     "aug31Checkbox": "I will pay by Aug 31"
   },

@@ -13,7 +13,6 @@ export const profilePublicSchema = z.object({
 
 export const profilePaymentsSchema = z.object({
   needs_financial_assistance: z.string().optional(),
-  has_extra_to_contribute: z.string().optional(),
   payment_sent_checkbox: z.boolean(),
   will_pay_by_aug31_checkbox: z.boolean(),
 });

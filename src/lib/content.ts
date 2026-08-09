@@ -38,8 +38,8 @@ export function getPageContent(pageId: string): PageContent {
 export type RegistrationCopy = {
   page: { title: string; subtitle: string };
   profile: { title: string; subtitle: string; linkedGuestsTitle: string; linkedGuestsSubtitle: string };
-  coCreate: { title: string; subtitle: string; coThinkingTitle: string; coThinkingSubtitle: string; operationalTitle: string };
-  payments: { title: string; intro: string; privacyNote: string; financialLabel: string; financialHint: string; extraLabel: string; sentCheckbox: string; aug31Checkbox: string };
+  coCreate: { title: string; subtitle: string; coThinkingTitle: string; operationalTitle: string };
+  payments: { title: string; intro: string; privacyNote: string; financialLabel: string; financialHint: string; sentCheckbox: string; aug31Checkbox: string };
   logistics: { title: string; subtitle: string; bunkHint: string; beddingDetailsLabel: string; beddingDetailsHint: string };
   complete: { title: string; body: string; editPrompt: string; dashboardButton: string };
   coCreationDomains: { value: string; label: string; icon: string }[];
