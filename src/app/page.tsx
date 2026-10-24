@@ -1,41 +1,42 @@
 import Image from "next/image";
-import Link from "next/link";
+// import Link from "next/link";
 import { Compass } from "@phosphor-icons/react/dist/ssr";
-import { AppNav } from "@/components/layout/AppNav";
 import { SiteHeader, SiteFooter } from "@/components/layout/SiteHeader";
-import { MemoriesFrom2025 } from "@/components/landing/MemoriesFrom2025";
 import { BlobOne, BlobTwo, BlobThree } from "@/components/decorative/Blobs";
-import { Button } from "@/components/ui/Button";
+// import { Button } from "@/components/ui/Button";
 import { getContentBlock } from "@/lib/auth/helpers";
 import { getPageContent } from "@/lib/content";
-import { markdownToHtml, cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/server";
+import { markdownToHtml } from "@/lib/utils";
+// import { createClient } from "@/lib/supabase/server";
 
+// VPG 2026 was cancelled, and the Supabase project behind logins and all
+// participant data is no longer running. This page must not touch Supabase.
+// Every other route is redirected here by middleware.ts.
 export default async function LandingPage() {
   const page = getPageContent("landing");
   const hero = page.hero as Record<string, string>;
   const about = page.about as Record<string, string>;
-  const cta = page.cta as Record<string, string>;
+  // const cta = page.cta as Record<string, string>;
   const orientingContent = await getContentBlock("orienting_artifact");
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // const supabase = await createClient();
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser();
 
-  const registerHref = user ? "/register" : "/login?redirect=/register";
+  // const registerHref = user ? "/register" : "/login?redirect=/register";
 
   return (
-    <div className={cn("min-h-screen bg-cream-50", user && "pb-24 md:pb-8")}>
-      {user ? <AppNav /> : <SiteHeader />}
+    <div className="min-h-screen bg-cream-50">
+      <SiteHeader />
 
       <section className="relative overflow-hidden bg-lavender-50 px-4 py-16 sm:px-6 sm:py-24">
         <BlobOne className="-left-20 -top-20 h-80 w-80" />
         <BlobTwo className="-bottom-16 -right-16 h-72 w-72" color="teal" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
           <div>
-            <p className="text-label text-teal-600">{hero.eyebrow}</p>
-            <h1 className="mt-4 text-display-xl text-lavender-800">{hero.title}</h1>
+            <h1 className="text-display-xl text-lavender-800">{hero.title}</h1>
             <p className="mt-4 text-body-lg text-ink-600">{hero.subtitle}</p>
+            {/* Registration is switched off while VPG is on hold.
             <div className="mt-8 flex flex-wrap gap-4">
               <Link href={registerHref}>
                 <Button>{hero.primaryCta}</Button>
@@ -44,6 +45,7 @@ export default async function LandingPage() {
                 <Button variant="secondary">{hero.secondaryCta}</Button>
               </Link>
             </div>
+            */}
           </div>
           <div className="relative mx-auto h-64 w-full max-w-md sm:h-80">
             <div className="absolute left-0 top-4 h-48 w-36 rotate-[-3deg] overflow-hidden rounded-lg border-4 border-cream-50 shadow-soft sm:h-56 sm:w-44">
@@ -97,6 +99,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* Registration is switched off while VPG is on hold.
       <section className="bg-teal-50 px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-display-md">{cta.title}</h2>
@@ -106,8 +109,7 @@ export default async function LandingPage() {
           </Link>
         </div>
       </section>
-
-      {user && <MemoriesFrom2025 />}
+      */}
 
       <SiteFooter />
     </div>

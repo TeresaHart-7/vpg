@@ -18,7 +18,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Village Playground",
   description:
-    "Registration and community platform for the Village Playground gathering — Sept 25–29, 2026 at Camp Ki-Wa-Y.",
+    "Registration and community platform for the Village Playground gathering.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

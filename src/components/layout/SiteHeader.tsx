@@ -19,12 +19,14 @@ export function SiteHeader({ showNav = true }: { showNav?: boolean }) {
             >
               About villaging
             </Link>
+            {/* Logins are switched off while VPG is on hold (see middleware.ts).
             <Link
               href="/login"
               className="text-body-md font-semibold text-plum-500 hover:text-plum-700"
             >
               Log in
             </Link>
+            */}
           </nav>
         )}
       </div>
@@ -38,9 +40,6 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <p className="font-display text-display-sm text-lavender-800">
           Village Playground
-        </p>
-        <p className="mt-2 text-body-md text-ink-600">
-          Sept 25–29, 2026 · Camp Ki-Wa-Y, near Waterloo, ON
         </p>
         <p className="mt-4 text-body-sm text-ink-600">
           <a href="#about" className="text-teal-600 hover:underline">
